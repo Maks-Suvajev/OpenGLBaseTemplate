@@ -207,7 +207,7 @@ int main()
 	std::filesystem::path basePath;
 	for (const auto& part : exePath) {
 		basePath /= part;
-		if (part == "baseProject") {
+		if (part == "OpenGLBaseTemplate") {
 			break;
 		}
 	}
