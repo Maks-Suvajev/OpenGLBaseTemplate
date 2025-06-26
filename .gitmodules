@@ -1,12 +1,12 @@
 [submodule "Shaders"]
 	path = Shaders
 	url = git@github.com:Maks-Suvajev/Shaders.git
-	branch = develop
+	branch = master-integration
 [submodule "Assets"]
 	path = Assets
 	url = git@github.com:Maks-Suvajev/Assets.git
-	branch = develop
+	branch = master-integration
 [submodule "Dependencies"]
 	path = Dependencies
 	url = git@github.com:Maks-Suvajev/Dependencies.git
-	branch = develop
+	branch = master-integration
