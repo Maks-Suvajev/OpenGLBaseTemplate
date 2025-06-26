@@ -1,0 +1,3 @@
+[submodule "Shaders"]
+	path = Shaders
+	url = git@github.com:Maks-Suvajev/Shaders.git
