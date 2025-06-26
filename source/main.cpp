@@ -215,8 +215,8 @@ int main()
 	std::cout << "Base path: " << basePath << "\n";
 
 
-	std::filesystem::path texture1path = basePath / "assets" / "container.jpg";
-	std::filesystem::path texture2path = basePath / "assets" / "awesomeface.png";
+	std::filesystem::path texture1path = basePath / "Assets" / "container.jpg";
+	std::filesystem::path texture2path = basePath / "Assets" / "awesomeface.png";
 
 	unsigned char* data = stbi_load(texture1path.string().c_str(), &width, &height, &nrChannels, 0);
 
