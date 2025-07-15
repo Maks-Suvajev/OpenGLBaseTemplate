@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <windows.h>
+#include "GfxAssets.h"
 
 
 #include <filesystem>
@@ -14,18 +15,16 @@
 #include "stb/stb_image.h"
 
 
-#define TEXTURE_PATH_1 "C:\\Users\\Maks-\\OneDrive\\Desktop\\OpenGL\\Project\\OpenGLTestProject\\OpenGLTestProject\\container.jpg"
-#define TEXTURE_PATH_2 "C:\\Users\\Maks-\\OneDrive\\Desktop\\OpenGL\\Project\\OpenGLTestProject\\OpenGLTestProject\\awesomeface.png"
-
-
-
+// WINDOW MANAGER
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void checkShaderCompilation(GLuint shaderID);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset_scroll);
+// WINDOW MANAGER
 
 
+// CAMERA // -------------------------
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -41,14 +40,18 @@ double yoffset = 0;
 
 bool firstMouse = true;
 float fov = 45.0f;
+// CAMERA // -------------------------
+
 
 int main()
 {
 
 
+	gfx::GfxAssets * gfxAssetsModule = new gfx::GfxAssets();
 
+	//TODO:: seperate method to get each one, assignment of each one should be assigned 
 
-
+	// WINDOW -----------------------------------
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -71,14 +74,16 @@ int main()
 		return -1;
 	}
 
-	Shader* local_shader = new Shader(FRAG_SHADER_PATH, VERT_SHADER_PATH);
+	gfx::Shader* shaderModule = new gfx::Shader(gfxAssetsModule->getFragShaderPath().string(), gfxAssetsModule->getVertShaderPath().string());
 
 	glViewport(0, 0, 800, 600);
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	glClearColor(0.0f, 0.1f, 0.5f, 1.0f); // Set the colour for clearing the screen
+	// WINDOW--------------------------------------------
 
+	// OBJECT MANAGER -----------------------------------
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -136,11 +141,12 @@ int main()
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
+
+
 	unsigned int indices[] = {
 	0, 1, 3, // first triangle
 	1, 2, 3  // second triangle
 	};
-
 
 	unsigned int VAO_1;
 	glGenVertexArrays(1, &VAO_1);
@@ -153,11 +159,6 @@ int main()
 
 
 	//unsigned int EBO_1;
-	//glGenBuffers(1, &EBO_1);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_1);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
 	// Setup up VAO attributes
 
 	// vertice position attributes
@@ -171,6 +172,14 @@ int main()
 	// Texture coord attribute
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+
+	// OBJECT MANAGER -----------------------------------
+
+
+
+
+	// TEXTURE MANAGER -----------------------------------
 
 	
 	// Load and create texture
@@ -263,11 +272,23 @@ int main()
 
 	stbi_image_free(data);
 
+
+	// TEXTURE MANAGER -----------------------------------
+
+
+
+	// WINDOW MANAGER ---------------------------
+
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
+
+	// WINDOW MANAGER----------------
+
+
+	// TEXTURE MANAGER -----------------------------------
 
 	// Assign textures to texture units
 	glActiveTexture(GL_TEXTURE0);
@@ -275,23 +296,27 @@ int main()
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture2);
 
+	// TEXTURE MANAGER -----------------------------------
+
+	
+	// SHADER -----------------------------------
 
 	// activate the shader
-	glUseProgram(local_shader->getShaderID());
+	shaderModule->useProgram();
 
-	glUniform1i(glGetUniformLocation(local_shader->getShaderID(), "texture1"), 0); 
-	glUniform1i(glGetUniformLocation(local_shader->getShaderID(), "texture2"), 1); 
+	// TODO:: Needs to be performed by "Material/Render" system
+	glUniform1i(shaderModule->getUniformLocation("texture1"), 0); 
+	glUniform1i(shaderModule->getUniformLocation("texture2"), 1); 
 
+	// SHADER -----------------------------------
 
-
-	glm::mat4 view;
-	view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
+	// TODO: Camera module needs to generate view matrix
+	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
 					   glm::vec3(0.0f, 0.0f, 0.0f),
 					   glm::vec3(0.0f, 1.0f, 0.0f));
 
 
-
-
+	glm::mat4 model = glm::mat4(1.0f);
 
 
 	// Projection (Move to clip space, apply perspective via perspective matrix)
@@ -299,20 +324,6 @@ int main()
 	projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
 
 	// Send all of the transformations to shader uniform data
-
-	//model
-	//int modelLoc = glGetUniformLocation(local_shader->getShaderID(), "model");
-	//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-	//view
-	int viewLoc = glGetUniformLocation(local_shader->getShaderID(), "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-	//perspective
-	int projectionLoc = glGetUniformLocation(local_shader->getShaderID(), "projection");
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -328,28 +339,22 @@ int main()
 		// Render here
 		glBindVertexArray(VAO_1);
 
+		// View and projection matrices will be generated by camera module
+		// Model matrix is unique to each object in the world 
 		glm::mat4 view;
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-		//std::cout << "camerapos.x = " << cameraPos.x << std::endl;
-		//std::cout << "camerapos.y = " << cameraPos.y << std::endl;
-		//std::cout << "camerapos.z = " << cameraPos.z << std::endl;
-
-
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-
+		shaderModule->updateViewMatrixValue(view);
 
 		// Projection (Move to clip space, apply perspective via perspective matrix)
 		projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
 
-		//perspective
-		projectionLoc = glGetUniformLocation(local_shader->getShaderID(), "projection");
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		shaderModule->updateProjectionMatrixValue(projection);
+
 
 		//Sleep(500);
 
-
+		// assetManager module
 		for (uint8_t i = 0; i < 10; i++)
 		{
 			glm::mat4 model = glm::mat4(1.0f);
@@ -374,18 +379,17 @@ int main()
 
 			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-			int modelLoc = glGetUniformLocation(local_shader->getShaderID(), "model");
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
+			shaderModule->updateModelMatrixValue(model);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		}
+		// camera module -- 
 
+		// Window module I guess?
 		glfwSwapBuffers(window);
 
 	}
-
 
 	glfwTerminate();
 
@@ -460,17 +464,3 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset_scroll)
 
 	std::cout << "Callback called! fov = " << fov  << std::endl;
 }
-
-
-//void checkShaderCompilation(GLuint shaderID)
-//{
-//	int success;
-//	char infoLog[512];
-//	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-//
-//	if (!success)
-//	{
-//		glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-//		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-//	}
-//}
