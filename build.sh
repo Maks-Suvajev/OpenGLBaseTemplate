@@ -6,8 +6,9 @@ if [[ "$1" == "build" || "$1" == "--build" || "$1" == "-build" || "$1" == "" ]];
 
 
 	if [ -d "build/" ]; then
-		echo "Deleting build folder"
+		echo "Deleting build and bin folder"
 		rm -rf build
+		rm -rf bin
 	fi
 	
 	echo "Making new build folder"
@@ -21,8 +22,9 @@ if [[ "$1" == "build" || "$1" == "--build" || "$1" == "-build" || "$1" == "" ]];
 elif [[ "$1" == "clean" || "$1" == "--clean" || "$1" == "-clean" || "$1" == "-c" || "$1" == "--c" ]]; then
 
 	if [ -d "build/" ]; then
-		echo "Deleting build folder"
+		echo "Deleting build and bin folder"
 		rm -rf build
+		rm -rf bin
 	else
 		echo "Already clean"
 	fi
