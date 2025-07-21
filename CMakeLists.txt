@@ -14,6 +14,8 @@ set(ASSETS_SRC_DIR ${CMAKE_SOURCE_DIR}/Assets/source)
 # Add source files
 set(SRC_FILES
     source/main.cpp
+    source/Window.cpp
+    source/Camera.cpp
     ${SHADER_SRC_DIR}/shader.cpp
 	${ASSETS_SRC_DIR}/GfxAssets.cpp
     ${DEPS_SRC_DIR}/glad/glad.c
@@ -36,6 +38,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${ASSETS_SRC_DIR}
 
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECT_NAME="\"${PROJECT_NAME}\"")
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLAD_GL_IMPLEMENTATION)
 
