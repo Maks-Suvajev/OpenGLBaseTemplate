@@ -16,6 +16,7 @@ set(SRC_FILES
     source/main.cpp
     source/Window.cpp
     source/Camera.cpp
+	source/TextureLoader.cpp
     ${SHADER_SRC_DIR}/shader.cpp
 	${ASSETS_SRC_DIR}/GfxAssets.cpp
     ${DEPS_SRC_DIR}/glad/glad.c

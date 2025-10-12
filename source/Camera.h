@@ -121,7 +121,6 @@ class Camera
         {
             cameraState.resolution.width = width;
             cameraState.resolution.height = height;
-
         }
 
     private:

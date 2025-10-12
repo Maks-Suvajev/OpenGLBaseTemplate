@@ -41,9 +41,6 @@ class Window
             return glfwWindow;
         }
 
-       // void clearScreen
-
-
     private:
         GLFWwindow* glfwWindow;
         Camera * camera;

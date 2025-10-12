@@ -3,6 +3,9 @@
 
 namespace gfx {
 
+//TODO: Possibly need to change types used in structures. Static casting a lot of doubles to floats at the moment, maybe should just use floats?
+
+
 
 // 3D camera module, 
 Camera::Camera(float width, float height)
@@ -45,16 +48,16 @@ void Camera::processMouseInput(double xPosition, double yPosition)
 
     if (firstMouse)
     {
-        cameraState.previousMousePosition.x = xPosition;
-        cameraState.previousMousePosition.y = yPosition;
+        cameraState.previousMousePosition.x = static_cast<float>(xPosition);
+        cameraState.previousMousePosition.y = static_cast<float>(yPosition);
         firstMouse = false;
     }
 
-    cameraState.mouseOffset.x = xPosition - cameraState.previousMousePosition.x;
-    cameraState.mouseOffset.y = cameraState.previousMousePosition.y - yPosition;
+    cameraState.mouseOffset.x = static_cast<float>(xPosition) - cameraState.previousMousePosition.x;
+    cameraState.mouseOffset.y = cameraState.previousMousePosition.y - static_cast<float>(yPosition);
 
-    cameraState.previousMousePosition.x = xPosition;
-    cameraState.previousMousePosition.y = yPosition;
+    cameraState.previousMousePosition.x = static_cast<float>(xPosition);
+    cameraState.previousMousePosition.y = static_cast<float>(yPosition);
 
     cameraState.mouseOffset.x *= cameraState.lookSensitivity;
     cameraState.mouseOffset.y *= cameraState.lookSensitivity;
@@ -69,9 +72,9 @@ void Camera::processMouseInput(double xPosition, double yPosition)
 		cameraState.tiltAngles.pitch = lowPitchLimit;
 
 	glm::vec3 direction;
-	direction.x = cos(glm::radians(cameraState.tiltAngles.yaw)) * cos(glm::radians(cameraState.tiltAngles.pitch));
-	direction.y = sin(glm::radians(cameraState.tiltAngles.pitch));
-	direction.z = sin(glm::radians(cameraState.tiltAngles.yaw)) * cos(glm::radians(cameraState.tiltAngles.pitch));
+	direction.x = static_cast<float>(cos(glm::radians(cameraState.tiltAngles.yaw)) * cos(glm::radians(cameraState.tiltAngles.pitch)));
+	direction.y = static_cast<float>(sin(glm::radians(cameraState.tiltAngles.pitch)));
+	direction.z = static_cast<float>(sin(glm::radians(cameraState.tiltAngles.yaw)) * cos(glm::radians(cameraState.tiltAngles.pitch)));
 	cameraState.orientationVectors.cameraFront = glm::normalize(direction);
 }
 

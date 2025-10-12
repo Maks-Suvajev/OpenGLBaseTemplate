@@ -34,6 +34,7 @@ Window::Window(const char * projectName)
 
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    //Setup callbacks
 	glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
 	glfwSetCursorPosCallback(glfwWindow, mouseCallback);
 	glfwSetScrollCallback(glfwWindow, scrollCallback);
@@ -41,9 +42,6 @@ Window::Window(const char * projectName)
     setScreenClearColour(initialScreenClearColour);
 
     glEnable(GL_DEPTH_TEST);
-
-    //glDisable(GL_DEPTH_TEST);
-
 
 	camera = new Camera(windowInitialWidth, windowInitialHeight);
 };
