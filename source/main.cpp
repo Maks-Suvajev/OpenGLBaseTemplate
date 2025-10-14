@@ -17,6 +17,7 @@
 #include "Window.h"
 #include "Renderer.h"
 #include "Cube.h"
+#include "Movement.h"
 
 int main()
 {
@@ -69,6 +70,7 @@ int main()
 
 	gfx::Renderer<glm::vec3> * renderModule = new gfx::Renderer<glm::vec3>(std::move(VAOGroupDataVec), std::move(texturePathsFound), *shaderModule);
 
+    gfx::Movement<glm::vec3> * movementModule = new gfx::Movement<glm::vec3>();
 
 // 	// Send all of the transformations to shader uniform data
 
@@ -85,7 +87,7 @@ int main()
 
 		shaderModule->updateProjectionMatrixValue(window->getCameraInstance()->calculateProjectionMatrix());
 
-		renderModule->drawScene(*shaderModule, *window);
+		renderModule->drawScene(*shaderModule, *window, *movementModule);
 
 		glfwSwapBuffers(window->getGlfwWindow());
 
@@ -96,36 +98,3 @@ int main()
 	return 0;
 
 }
-
-
-
-// 		// assetManager module
-// 		for (uint8_t i = 0; i < 10; i++)
-// 		{
-// 			glm::mat4 model = glm::mat4(1.0f);
-
-// 			model = glm::translate(model, cubePositions[i]);
-
-
-// 			float angle = 0;
-
-// 			if (i == 0 || i % 3 == 0)
-// 			{
-
-// 				angle = 20.0f * i * (float)glfwGetTime();
-
-
-// 			}
-// 			else
-// 			{
-// 				angle = 20.0f * i;
-
-// 			}
-
-// 			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-
-// 			shaderModule->updateModelMatrixValue(model);
-
-// 			glDrawArrays(GL_TRIANGLES, 0, 36);
-
-// 		}

@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Shader.h"
 #include "VAOGroup.h"
-
+#include "Movement.h"
 
 
 namespace gfx {
@@ -22,7 +22,7 @@ class Renderer
     public:
         Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>&& texturePaths, Shader& shader);
         //void loadVAOList(std::vector<VAOGroup<T>>&& VAOList);
-        void drawScene(Shader& shaderInstance, Window& windowInstance);
+        void drawScene(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance);
         void rebindTextures();
         
 
@@ -127,7 +127,7 @@ void Renderer<T>::rebindTextures()
 }
 
 template<typename T>
-void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance)
+void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance)
 {
     shaderInstance.useProgram();
 
@@ -135,7 +135,7 @@ void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance)
 
    for (auto& VAOGroup : VAOGroups)
    {
-        VAOGroup->drawGroup(shaderInstance, windowInstance);
+        VAOGroup->drawGroup(shaderInstance, windowInstance, movementInstance);
    }
 }
 

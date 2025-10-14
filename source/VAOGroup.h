@@ -6,6 +6,7 @@
 #include "RenderObject.h"
 #include "Shader.h"
 #include "Window.h"
+#include "Movement.h"
 
 namespace gfx {
 
@@ -70,7 +71,7 @@ class VAOGroup
         }
 
         void bindVAO();
-        void drawGroup(Shader& shaderInstance, Window& windowInstance);
+        void drawGroup(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance);
 
 
     private:
@@ -88,35 +89,26 @@ void VAOGroup<T>::bindVAO()
 }
 
 template<typename T>
-void VAOGroup<T>::drawGroup(Shader& shaderInstance, Window& windowInstance)
+void VAOGroup<T>::drawGroup(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance)
 {
     bindVAO();
 
-    uint16_t instanceRotation = 0;
-    float rotationAngle = 0;
+    uint16_t instanceIndex = 0;
 
     for (auto& instance : instanceList)
     {
+
         glm::mat4 model = glm::mat4(1.0f);
 
         model = glm::translate(model, instance->getPosition());
 
-        if (instanceRotation == 0 || instanceRotation % 3 == 0)
-        {
-            rotationAngle = 20.0f * instanceRotation * static_cast<float>(glfwGetTime());
-        }
-        else
-        {
-            rotationAngle = 20.0f * instanceRotation;
-        }
-
-        ++instanceRotation;
-
-        model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(1.0f, 0.3f, 0.5f));
+        movementInstance.performTestAnimation(model, instanceIndex);
 
         shaderInstance.updateModelMatrixValue(model);
 
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // TODO: Inefficient - need to batch render in future
+
+        ++instanceIndex;
     }
 }
 
