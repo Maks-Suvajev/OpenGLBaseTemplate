@@ -20,7 +20,7 @@ template<typename T>
 class Renderer
 {
     public:
-        Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>&& texturePaths, Shader& shader);
+        Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>& texturePaths, Shader& shader);
         //void loadVAOList(std::vector<VAOGroup<T>>&& VAOList);
         void drawScene(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance);
         void rebindTextures();
@@ -34,7 +34,7 @@ class Renderer
 };
 
 template<typename T>
-Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>&& texturePaths, Shader& shader)
+Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>& texturePaths, Shader& shader)
 {
     // Load VAOs
     for(auto& VAOInitInstance : VAOInitData)

@@ -20,6 +20,10 @@ Window::Window(const char * projectName)
         std::cout << "Failed to create a GLFW window!" << std::endl;
         glfwTerminate();
     }
+    else
+    {
+        std::cout << "Successfully created a GLFW window!" << std::endl;
+    }
 
     glfwMakeContextCurrent(glfwWindow);
 
