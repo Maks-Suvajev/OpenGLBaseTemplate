@@ -59,7 +59,7 @@ class VAOGroup
             for (const auto& instance : initGroup.instanceData)
             {
                 // make unique ptr
-                RenderObject<T> * newInstance = new RenderObject<T>(instance);
+                std::shared_ptr<RenderObject<T>> newInstance = std::make_shared<RenderObject<T>>(instance);
                 instanceList.push_back(newInstance);
             }
         }
@@ -70,8 +70,13 @@ class VAOGroup
             return std::make_unique<VAOGroup<T>>(std::move(initGroup));
         }
 
+        std::vector<std::shared_ptr<RenderObject<T>>> shareInstanceList()
+        {
+            return instanceList;
+        }
+
         void bindVAO();
-        void drawGroup(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance);
+        void drawGroup(Shader& shaderInstance, Window& windowInstance);
 
 
     private:
@@ -79,7 +84,7 @@ class VAOGroup
         GLuint VBO;
         GLuint EBO;
 
-        std::vector<RenderObject<T>*> instanceList;
+        std::vector<std::shared_ptr<RenderObject<T>>> instanceList;
 };
 
 template<typename T>
@@ -89,7 +94,7 @@ void VAOGroup<T>::bindVAO()
 }
 
 template<typename T>
-void VAOGroup<T>::drawGroup(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance)
+void VAOGroup<T>::drawGroup(Shader& shaderInstance, Window& windowInstance)
 {
     bindVAO();
 
@@ -97,18 +102,9 @@ void VAOGroup<T>::drawGroup(Shader& shaderInstance, Window& windowInstance, Move
 
     for (auto& instance : instanceList)
     {
-
-        glm::mat4 model = glm::mat4(1.0f);
-
-        model = glm::translate(model, instance->getPosition());
-
-        movementInstance.performTestAnimation(model, instanceIndex);
-
-        shaderInstance.updateModelMatrixValue(model);
+        shaderInstance.updateModelMatrixValue(instance->getModelMatrix());
 
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // TODO: Inefficient - need to batch render in future
-
-        ++instanceIndex;
     }
 }
 

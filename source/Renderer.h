@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Shader.h"
 #include "VAOGroup.h"
-#include "Movement.h"
+#include "RenderObject.h"
 
 
 namespace gfx {
@@ -22,8 +22,9 @@ class Renderer
     public:
         Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>& texturePaths, Shader& shader);
         //void loadVAOList(std::vector<VAOGroup<T>>&& VAOList);
-        void drawScene(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance);
+        void drawScene(Shader& shaderInstance, Window& windowInstance);
         void rebindTextures();
+        std::vector<std::shared_ptr<RenderObject<T>>> getMovableObjects();
         
 
     private:
@@ -32,6 +33,24 @@ class Renderer
         GLint maxTextureUnits;
 
 };
+
+
+// Flatten all objects for sending their pointers to movement/physics systems - for now send all but will need to differentiate
+// between movable/unmovable objects later
+template<typename T>
+std::vector<std::shared_ptr<RenderObject<T>>> Renderer<T>::getMovableObjects()
+{
+    std::vector<std::shared_ptr<RenderObject<T>>> moveableObjects;
+    std::vector<std::shared_ptr<RenderObject<T>>> tempInstanceList;
+
+    for (auto& VAOGroup : VAOGroups)
+    {
+        tempInstanceList = VAOGroup->shareInstanceList();
+        moveableObjects.insert(moveableObjects.end(), tempInstanceList.begin(), tempInstanceList.end());
+    }
+
+    return moveableObjects;
+}
 
 template<typename T>
 Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>& texturePaths, Shader& shader)
@@ -109,9 +128,13 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
         
         GLenum err = glGetError();
         if (err != GL_NO_ERROR)
+        {
             std::cout << "glUniform1iv failed with error: " << err << std::endl;
+        }
         else
+        {
             std::cout << "glUniform1iv succeeded!" << std::endl;
+        }
     }
 
 }
@@ -127,7 +150,7 @@ void Renderer<T>::rebindTextures()
 }
 
 template<typename T>
-void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance, Movement<T>& movementInstance)
+void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance)
 {
     shaderInstance.useProgram();
 
@@ -135,7 +158,7 @@ void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance, Move
 
    for (auto& VAOGroup : VAOGroups)
    {
-        VAOGroup->drawGroup(shaderInstance, windowInstance, movementInstance);
+        VAOGroup->drawGroup(shaderInstance, windowInstance);
    }
 }
 
