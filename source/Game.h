@@ -45,13 +45,15 @@ Game<T>::Game()
 
     texturePaths = gfxAssetsModule->getTexturePaths();
 
-    for (auto path : texturePaths)
-	{
-		std::cout << "Path found: " << path.string() << std::endl;
-	}
+    #ifdef ENABLE_DEBUG_MESSAGES
+        for (auto path : texturePaths)
+        {
+            std::cout << "DEBUG::Path found: " << path.string() << std::endl;
+        }
 
-    std::cout << "Frag shader path = " << gfxAssetsModule->getFragShaderPath().string() << std::endl;
-	std::cout << "Vert shader path = " << gfxAssetsModule->getVertShaderPath().string() << std::endl;
+        std::cout << "DEBUG::Frag shader path = " << gfxAssetsModule->getFragShaderPath().string() << std::endl;
+        std::cout << "DEBUG::Vert shader path = " << gfxAssetsModule->getVertShaderPath().string() << std::endl;
+    #endif
 
     shaderModule = std::make_unique<gfx::Shader>(gfxAssetsModule->getFragShaderPath().string(), gfxAssetsModule->getVertShaderPath().string());
 

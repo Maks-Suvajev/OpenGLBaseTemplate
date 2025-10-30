@@ -26,7 +26,10 @@ namespace gfx {
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true);
 
-        std::cout << "Loading texture path: " << texturePath.string() << std::endl;
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "DEBUG::Loading texture path: " << texturePath.string() << std::endl;
+        #endif
+
         unsigned char* data = stbi_load(texturePath.string().c_str(), &width, &height, &nrChannels, 0);
 
         if (nrChannels == 3)
@@ -43,7 +46,9 @@ namespace gfx {
             textureFormat = GL_RGB;
         }
 
-        std::cout << "Number of channels detected = " << nrChannels << std::endl;
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "DEBUG::Number of channels detected = " << nrChannels << std::endl;
+        #endif
 
         if (data)
         {
@@ -53,7 +58,11 @@ namespace gfx {
         else
         {
             glDeleteTextures(1, &textureID);
-            std::cout << "Failed to load texture!" << std::endl;
+
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "ERROR::Failed to load texture!" << std::endl;
+            #endif
+
             return 0;
         }
 

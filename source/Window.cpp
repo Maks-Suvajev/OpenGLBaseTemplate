@@ -17,12 +17,17 @@ Window::Window(const char * projectName)
 
     if (glfwWindow == NULL)
     {
-        std::cout << "Failed to create a GLFW window!" << std::endl;
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::Failed to create a GLFW window!" << std::endl;
+        #endif
+
         glfwTerminate();
     }
     else
     {
-        std::cout << "Successfully created a GLFW window!" << std::endl;
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "DEBUG::Successfully created a GLFW window!" << std::endl;
+        #endif
     }
 
     glfwMakeContextCurrent(glfwWindow);
@@ -31,7 +36,9 @@ Window::Window(const char * projectName)
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD GL function loader!" << std::endl;
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::Failed to initialize GLAD GL function loader!" << std::endl;
+        #endif
     } 
 
     glViewport(0, 0, windowInitialWidth, windowInitialHeight);

@@ -1,6 +1,7 @@
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
 
+#include <vector>
 #include <glm/glm.hpp>
 #include "RenderObject.h"
 
@@ -29,9 +30,10 @@ Movement<T>::Movement(std::vector<std::shared_ptr<RenderObject<T>>> objects)
 {
     initMovableObjects(objects);
 
-    std::cout << "Calling printing of registered objects in Movement Module: " << std::endl;
-
-    printPositionsOfRegisteredObjects();
+    #ifdef ENABLE_DEBUG_MESSAGES
+        std::cout << "DEBUG::Calling printing of registered objects in Movement Module: " << std::endl;
+        printPositionsOfRegisteredObjects();
+    #endif
 }
 
 
@@ -62,14 +64,13 @@ void Movement<T>::removeObject(std::shared_ptr<RenderObject<T>> object)
 template<typename T>
 void Movement<T>::printPositionsOfRegisteredObjects()
 {
-
     for (auto& object : movableObjects)
     {
         T position = object->getPosition();
 
-        std::cout << "Movement module has an object registered at position: ";
+        std::cout << "DEBUG::Movement module has an object registered at position: ";
 
-        std::cout << "PosX = " << position.x << " " << "PosY = " << position.y << " " << "PosZ = " << position.z << std::endl;
+        std::cout << "DEBUG::PosX = " << position.x << " " << "PosY = " << position.y << " " << "PosZ = " << position.z << std::endl;
     }
 }
 

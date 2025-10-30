@@ -60,3 +60,6 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
+
+# --------------------------------------- Debug message toggle ---------------------------------------
+add_compile_definitions(ENABLE_DEBUG_MESSAGES)

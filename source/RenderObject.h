@@ -38,22 +38,19 @@ class RenderObject
 
             modelMatrix = glm::mat4(1.0f);
 
-            std::cout << "Instantiated new render object with position: ";
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::Instantiated new render object with position: ";
+                std::cout << "DEBUG::PosX = " << objectTransforms.position.x << " " << "PosY = " << objectTransforms.position.y << " " << "PosZ = " << objectTransforms.position.z << std::endl;
 
+                std::cout << "DEBUG::And texture Indices: ";
 
-            std::cout << "PosX = " << objectTransforms.position.x << " " << "PosY = " << objectTransforms.position.y << " " << "PosZ = " << objectTransforms.position.z;
-   
+                for (auto& index : textures)
+                {
+                    std::cout << " " << index << " ";
+                }
 
-            std::cout << std::endl;
-
-            std::cout << "And texture Indices: ";
-
-            for (auto& index : textures)
-            {
-                std::cout << " " << index << " ";
-            }
-
-            std::cout << std::endl;
+                std::cout << std::endl;
+            #endif
         }
 
         glm::mat4 getModelMatrix()
