@@ -14,8 +14,6 @@
 
 namespace gfx {
 
-//TODO: Currently using texture unit indexing, need to switch to texture arrays or I can only bind 16 or 32 texturesm, horrible limitation
-// Holds an objects position and which loaded textures should be bound with that particular object
 template<typename T>
 class Renderer
 {
@@ -35,8 +33,7 @@ class Renderer
 };
 
 
-// Flatten all objects for sending their pointers to movement/physics systems - for now send all but will need to differentiate
-// between movable/unmovable objects later
+// Flatten all objects into a single vector for sending their pointers to movement/physics systems
 template<typename T>
 std::vector<std::shared_ptr<RenderObject<T>>> Renderer<T>::getMovableObjects()
 {
@@ -51,6 +48,7 @@ std::vector<std::shared_ptr<RenderObject<T>>> Renderer<T>::getMovableObjects()
 
     return moveableObjects;
 }
+
 
 template<typename T>
 Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>& texturePaths, Shader& shader)
@@ -129,11 +127,11 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
         GLenum err = glGetError();
         if (err != GL_NO_ERROR)
         {
-            std::cout << "glUniform1iv failed with error: " << err << std::endl;
+            std::cout << "glUniform1iv failed to set texture uniform with error: " << err << std::endl;
         }
         else
         {
-            std::cout << "glUniform1iv succeeded!" << std::endl;
+            std::cout << "glUniform1iv succeeded in setting texture uniform!" << std::endl;
         }
     }
 
@@ -154,7 +152,7 @@ void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance)
 {
     shaderInstance.useProgram();
 
-    rebindTextures(); //TODO: all instances sharing texture now
+    rebindTextures(); // all instances sharing texture now
 
    for (auto& VAOGroup : VAOGroups)
    {
