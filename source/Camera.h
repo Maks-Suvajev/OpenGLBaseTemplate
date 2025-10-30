@@ -11,7 +11,6 @@
 
 namespace gfx {
 
-//TODO: Future inputs for config file
 inline constexpr uint16_t windowInitialWidth  = 800; 
 inline constexpr uint16_t windowInitialHeight = 600; 
 
@@ -126,7 +125,7 @@ class Camera
     private:
         CameraState cameraState;
      
-        void initialiseCameraState(float width, float height); //Initilisation function TODO: these values should be input from the game logic
+        void initialiseCameraState(float width, float height); 
 
 
 };

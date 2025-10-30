@@ -14,8 +14,6 @@
 
 namespace gfx {
 
-//TODO: Currently using texture unit indexing, need to switch to texture arrays or I can only bind 16 or 32 texturesm, horrible limitation
-// Holds an objects position and which loaded textures should be bound with that particular object
 template<typename T>
 class Renderer
 {
@@ -35,8 +33,7 @@ class Renderer
 };
 
 
-// Flatten all objects for sending their pointers to movement/physics systems - for now send all but will need to differentiate
-// between movable/unmovable objects later
+// Flatten all objects into a single vector for sending their pointers to movement/physics systems
 template<typename T>
 std::vector<std::shared_ptr<RenderObject<T>>> Renderer<T>::getMovableObjects()
 {
@@ -52,6 +49,7 @@ std::vector<std::shared_ptr<RenderObject<T>>> Renderer<T>::getMovableObjects()
     return moveableObjects;
 }
 
+
 template<typename T>
 Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<std::filesystem::path>& texturePaths, Shader& shader)
 {
@@ -64,8 +62,9 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
 
     // Pull max number of texture units
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
-
-    std::cout << "Detected max texture units as = " << maxTextureUnits << std::endl;
+    #ifdef ENABLE_DEBUG_MESSAGES
+        std::cout << "DEBUG::Detected max texture units as = " << maxTextureUnits << std::endl;
+    #endif
 
     // Load textures
     GLuint textureID;
@@ -74,7 +73,10 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
     {
         if (textureIDs.size() >= maxTextureUnits)
         {
-            std::cout << "Max number of texture units reached (" << maxTextureUnits << "). Cannot load any more textures" << std::endl;
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::Max number of texture units reached (" << maxTextureUnits << "). Cannot load any more textures" << std::endl;
+            #endif
+
             break;
         }
 
@@ -85,14 +87,18 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
             glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(textureIDs.size()));
             glBindTexture(GL_TEXTURE_2D, textureID);
 
-            std::cout << "Bound texture: " << GL_TEXTURE0 + static_cast<GLenum>(textureIDs.size()) << std::endl;
-            std::cout << "To textureID = " << textureID << std::endl;
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::Bound texture: " << GL_TEXTURE0 + static_cast<GLenum>(textureIDs.size()) << std::endl;
+                std::cout << "DEBUG::To textureID = " << textureID << std::endl;
+            #endif
 
             textureIDs.push_back(textureID);
         }
         else
         {
-            std::cout << "Failed to load texture with path: " << path.string() << std::endl;
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::Failed to load texture with path: " << path.string() << std::endl;
+            #endif
         }
     }
 
@@ -105,14 +111,16 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
         textureUnits[textureUnit] = textureUnit;
     }
 
-    std::cout << "Texture uniform built: ";
+    #ifdef ENABLE_DEBUG_MESSAGES
+        std::cout << "DEBUG::Texture uniform built: ";
 
-    for (auto& i : textureUnits)
-    {
-        std::cout << " " << i << " ";
-    }
+        for (auto& i : textureUnits)
+        {
+            std::cout << " " << i << " ";
+        }
 
-    std::cout << std::endl;
+        std::cout << std::endl;
+    #endif
 
     shader.useProgram();
 
@@ -120,7 +128,9 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
 
     if (texturesUniformLoc == -1)
     {
-        std::cout << "FAILED TO LOAD TEXTURES UNIFORM LOCATION!" << std::endl;
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::FAILED TO LOAD TEXTURES UNIFORM LOCATION!" << std::endl;
+        #endif
     }
     else
     {
@@ -129,11 +139,15 @@ Renderer<T>::Renderer(std::vector<VAOGroupData<T>>&& VAOInitData, std::vector<st
         GLenum err = glGetError();
         if (err != GL_NO_ERROR)
         {
-            std::cout << "glUniform1iv failed with error: " << err << std::endl;
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "ERROR::glUniform1iv failed to set texture uniform with error: " << err << std::endl;
+            #endif
         }
         else
         {
-            std::cout << "glUniform1iv succeeded!" << std::endl;
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::glUniform1iv succeeded in setting texture uniform!" << std::endl;
+            #endif
         }
     }
 
@@ -154,7 +168,7 @@ void Renderer<T>::drawScene(Shader& shaderInstance, Window& windowInstance)
 {
     shaderInstance.useProgram();
 
-    rebindTextures(); //TODO: all instances sharing texture now
+    rebindTextures(); // all instances sharing texture now
 
    for (auto& VAOGroup : VAOGroups)
    {
