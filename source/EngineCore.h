@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef ENGINE_CORE_H
+#define ENGINE_CORE_H
 
 // System includes
 #include <memory> //For pointers
@@ -13,11 +13,11 @@
 
 // use glm::vec3 for 3D and glm::vec2 for 2D
 template<typename T>
-class Game
+class EngineCore
 {
 
     public:
-        Game();
+        EngineCore();
         void runLoop();
 
     private:
@@ -37,7 +37,7 @@ class Game
 
 
 template<typename T>
-Game<T>::Game()
+EngineCore<T>::EngineCore()
 {
     windowModule = std::make_unique<gfx::Window>("Test Window");
 
@@ -63,7 +63,7 @@ Game<T>::Game()
 }
 
 template<typename T>
-void Game<T>::runLoop()
+void EngineCore<T>::runLoop()
 {
     // Render loop
 	while (!glfwWindowShouldClose(windowModule->getGlfwWindow()))
@@ -89,7 +89,7 @@ void Game<T>::runLoop()
 }
 
 template<typename T>
-std::vector<gfx::VAOGroupData<T>> Game<T>::getVAOTestInitData()
+std::vector<gfx::VAOGroupData<T>> EngineCore<T>::getVAOTestInitData()
 {
     gfx::VAOGroupData<glm::vec3> initData;
 
