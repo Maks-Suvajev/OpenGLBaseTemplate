@@ -1,4 +1,4 @@
-# OpenGLBaseTemplate
+# RenderingEngine
 
 Currently work in progress, this project is building towards being a multipurpose rendering engine whether for simulations, games or other multimedia applications. Currently based on OpenGL 
 but in future the goal is to become graphics library agnostic. 
