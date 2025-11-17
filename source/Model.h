@@ -15,35 +15,47 @@ struct Transform
     glm::vec3 scaleFactors;
 };
 
+struct Material
+{
+    Shader* shader;
+    bool isLightSource;
+    GLuint texture;
+};
+
+struct Part
+{
+    Material* material;
+    Mesh* mesh;
+};
+
+struct MaterialMeshPair
+{
+    Material material;
+    MeshData meshData;
+};
+
+
 struct ModelInitData
 {
-    Transform transform;
-    std::vector<MeshData> meshInitData;
-
+    Transform* transform;
+    std::vector<MaterialMeshPair> materialMeshPairs;
 };
+
+
 
 class Model
 {
     public:
         Model(ModelInitData initData);
 
-        // Getters
-        const glm::mat4& getModelMatrix() const
-        {
-            return modelMatrix;
-        }
-
+        void drawModel();
+        // Commenting out before deletion (will be moved to object handler system)
+        /*
         const Transform& getTransform() const
         {
             return objectTransforms;
         }
-
-        // Setters
-        void updateModelMatrix(glm::mat4 newModelMatrix)
-        {
-            modelMatrix = newModelMatrix;
-        }
-
+        
         void updatePosition(glm::vec3 newPosition)
         {
             objectTransforms.position = newPosition;
@@ -59,11 +71,14 @@ class Model
             objectTransforms.scaleFactors = newScaleFactors;
         }
 
+        */
 
     private:
-        Transform objectTransforms;
-        glm::mat4 modelMatrix;
-        std::vector<std::unique_ptr<Mesh>> Meshes;
+        Transform * objectTransforms; 
+        glm::mat4 modelMatrix; 
+        std::vector<std::unique_ptr<Mesh>> meshes;
+        std::vector<std::unique_ptr<Material>> materials;
+        std::vector<Part> parts;
 
         void reconstructModelMatrix();
 };

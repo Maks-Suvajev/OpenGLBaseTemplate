@@ -8,50 +8,32 @@
 namespace gfx
 {
 
-struct Material
-{
-    std::unique_ptr<Shader> shader;
-    GLuint texture;
-};
-
 struct MeshData
 {   
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
-    Material material;
 };
 
 class Mesh
 {
-
-
-    Mesh(MeshData initData);
-
-
-
-
-
-
-
+    public:
+        Mesh(MeshData initData);
+        void drawMesh();
+        void bindVAO();
 
     private:
         GLuint VAO;
         GLuint VBO;
         GLuint EBO;
 
-
-
-
-
-
-
-
-
-
-
-
-
 };
+
+
+
+
+
+
+
 
 }
 

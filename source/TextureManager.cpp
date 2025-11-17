@@ -28,13 +28,12 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
     {
         #ifdef ENABLE_DEBUG_MESSAGES
             std::cout << "DEBUG::Texture already loaded with the key: " << name << std::endl;
-            std::cout << "DEBUG::Returning empty struct"
+            std::cout << "DEBUG::Returning empty struct" << std::endl;
         #endif
 
         return textureData;
     }
 
-    Texture textureData;
     GLuint textureID;
     GLenum textureFormat;
     GLenum internalFormat; // GPU side format 8-bit vs 16-bit pixel precision. 
@@ -101,6 +100,7 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
 
         textureData.textureID = textureID;
         textureData.textureFormat = textureFormat;
+        textureData.systemSourcePath = texturePath;
         textureData.width = width;
         textureData.height = height;
         textureData.nrChannels = nrChannels;

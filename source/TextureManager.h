@@ -20,6 +20,7 @@ struct Texture
     int width = 0;
     int height = 0;
     int nrChannels = 0;
+    std::filesystem::path systemSourcePath;
 };
 
 struct TextureToLoad
@@ -37,7 +38,7 @@ class TextureManager
 
 
     private:
-        std::unordered_map<std::string, Texture> loadedTextures;
+        std::unordered_map<std::string, std::unique_ptr<Texture>> loadedTextures;
 
 
 
