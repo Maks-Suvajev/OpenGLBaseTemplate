@@ -59,12 +59,27 @@ void Model::drawModel()
         {
             part.material->shader->updateUniformValue("objectColor", glm::vec3{1.0f, 0.5f, 0.31f});
             part.material->shader->updateUniformValue("lightColor",  glm::vec3{1.0f, 1.0f, 1.0f});
+            part.material->shader->updateUniformValue("lightPos",    glm::vec3{1.2f, 1.0, 2.0f});
         }
 
         //TODO: also set texture here
         part.material->shader->updateModelMatrixValue(modelMatrix);
         part.mesh->drawMesh();
     }
+}
+
+
+std::vector<Material*> Model::getMaterials()
+{
+    std::vector<Material*> ptrsToMaterials;
+    ptrsToMaterials.reserve(materials.size());
+
+    for (const auto& material : materials)
+    {
+        ptrsToMaterials.push_back(material.get());
+    }
+
+    return ptrsToMaterials;
 }
 
 }

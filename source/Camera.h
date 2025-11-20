@@ -122,6 +122,11 @@ class Camera
             cameraState.resolution.height = height;
         }
 
+        glm::vec3 getCameraPosition()
+        {
+            return cameraState.orientationVectors.cameraPosition;
+        }
+
     private:
         CameraState cameraState;
      

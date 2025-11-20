@@ -21,6 +21,9 @@ class Renderer
             }
         }
 
+        // Specular calculations require camera position in order to make the calculation.
+        void updateViewPosForSpecularLight(glm::vec3 cameraPos);
+
 
 
     private:

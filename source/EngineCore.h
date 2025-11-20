@@ -153,10 +153,11 @@ void EngineCore<T>::runLoop()
             shader->useProgram();
 	        shader->updateViewMatrixValue(windowModule->getCameraInstance()->calculateViewMatrix());
 		    shader->updateProjectionMatrixValue(windowModule->getCameraInstance()->calculateProjectionMatrix());
+            
         }
 	
         //movementModule->performTestAnimation();
-
+        renderModule->updateViewPosForSpecularLight(windowModule->getCameraInstance()->getCameraPosition());
 		renderModule->drawScene();
 
 		glfwSwapBuffers(windowModule->getGlfwWindow());

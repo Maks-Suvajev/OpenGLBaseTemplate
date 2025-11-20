@@ -49,6 +49,9 @@ class Model
         Model(ModelInitData initData);
 
         void drawModel();
+
+        std::vector<Material*> getMaterials();
+
         // Commenting out before deletion (will be moved to object handler system)
         /*
         const Transform& getTransform() const
