@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "EngineCore.h"
 
 #include <glm/glm.hpp>
 
@@ -10,9 +10,9 @@ int main()
         std::cout << "Debug messages activated!" << std::endl;
     #endif
 
-    std::unique_ptr<Game<glm::vec3>> GameInstance = std::make_unique<Game<glm::vec3>>();
+    std::unique_ptr<EngineCore<glm::vec3>> engineInstance = std::make_unique<EngineCore<glm::vec3>>();
 
-    GameInstance->runLoop();
+    engineInstance->runLoop();
 
 	return 0;
 
