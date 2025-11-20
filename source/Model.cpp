@@ -55,8 +55,6 @@ void Model::drawModel()
     {
         part.material->shader->useProgram();
 
-        //std::cout << "Shader activated in part loop = " << part.material->shader->getShaderName() << std::endl;
-        // Important: set these per draw
         if (!part.material->isLightSource)
         {
             part.material->shader->updateUniformValue("objectColor", glm::vec3{1.0f, 0.5f, 0.31f});

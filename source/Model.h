@@ -18,8 +18,8 @@ struct Transform
 struct Material
 {
     Shader* shader;
-    bool isLightSource;
     GLuint texture;
+    bool isLightSource;
 };
 
 struct Part

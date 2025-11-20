@@ -2,7 +2,6 @@
 
 namespace gfx
 {
-
     Renderer::Renderer(std::vector<ModelInitData> modelsToInit)
     {
         for (auto& modelToInit : modelsToInit)
@@ -11,7 +10,4 @@ namespace gfx
             models.push_back(std::move(newModelInstance));
         }
     }
-
-
-
 }
