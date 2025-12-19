@@ -3,6 +3,8 @@
 
 #include "Mesh.h"
 #include <glm/glm.hpp>
+#include <vector>
+#include <memory>
 
 
 namespace gfx
@@ -15,10 +17,17 @@ struct Transform
     glm::vec3 scaleFactors;
 };
 
+struct MaterialProperties
+{
+    GLuint diffuse;
+    GLuint specular;
+    float shininess; 
+};
+
 struct Material
 {
     Shader* shader;
-    GLuint texture;
+    MaterialProperties materialProp;
     bool isLightSource;
 };
 

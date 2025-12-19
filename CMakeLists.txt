@@ -20,6 +20,7 @@ set(SRC_FILES
 	source/Mesh.cpp
 	source/TextureManager.cpp
 	source/Renderer.cpp
+    source/Movement.cpp
     ${SHADER_SRC_DIR}/shader.cpp
 	${SHADER_SRC_DIR}/shaderManager.cpp
 	${ASSETS_SRC_DIR}/GfxAssetsManager.cpp

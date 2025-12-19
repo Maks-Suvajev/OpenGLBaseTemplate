@@ -5,6 +5,9 @@
 #include <glad/glad.h>
 #include <filesystem>
 #include <unordered_map>
+#include <vector>
+#include <string>
+#include <memory>
 
 
 namespace gfx 
@@ -23,17 +26,13 @@ struct Texture
     std::filesystem::path systemSourcePath;
 };
 
-struct TextureToLoad
-{
-    std::filesystem::path texturePath;
-    std::string name;
-};
-
 class TextureManager
 {
     public:
-        TextureManager(std::vector<TextureToLoad> texturesToLoad);
+        TextureManager(std::vector<std::filesystem::path> texturePaths);
         Texture loadTexture(const std::filesystem::path& texturePath, std::string name);
+        std::string extractTextureName(std::filesystem::path texturePath);
+        GLuint getTexture(std::string name);
 
 
 

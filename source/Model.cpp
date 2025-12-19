@@ -57,9 +57,36 @@ void Model::drawModel()
 
         if (!part.material->isLightSource)
         {
-            part.material->shader->updateUniformValue("objectColor", glm::vec3{1.0f, 0.5f, 0.31f});
-            part.material->shader->updateUniformValue("lightColor",  glm::vec3{1.0f, 1.0f, 1.0f});
-            part.material->shader->updateUniformValue("lightPos",    glm::vec3{1.2f, 1.0, 2.0f});
+            part.material->shader->updateUniformValue("light.lightSource", glm::vec4(-0.2, -1.0f, -0.3, 0.0f));
+
+            //part.material->shader->updateUniformValue("material.shininess", part.material->materialProp.shininess);
+            part.material->shader->updateUniformValue("material.shininess", part.material->materialProp.shininess);
+
+            // Time vary colours
+            glm::vec3 lightColor{1.0f};
+            // lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0f));
+            // lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7f));
+            // lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3f));
+
+            glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+            glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
+            // Set diffusion texture here
+            part.material->shader->updateUniformValue("material.diffuse", 0);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, part.material->materialProp.diffuse);
+
+            part.material->shader->updateUniformValue("material.specular", 1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, part.material->materialProp.specular);
+
+
+
+            //part.material->shader->updateUniformValue("objectColor", glm::vec3{1.0f, 0.5f, 0.31f});
+            part.material->shader->updateUniformValue("light.ambient",   ambientColor);
+            part.material->shader->updateUniformValue("light.diffuse",   diffuseColor);
+            part.material->shader->updateUniformValue("light.specular",  lightColor);
+
         }
 
         //TODO: also set texture here
