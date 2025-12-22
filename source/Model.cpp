@@ -57,10 +57,11 @@ void Model::drawModel()
 
         if (!part.material->isLightSource)
         {
-            part.material->shader->updateUniformValue("light.lightSource", glm::vec4(-0.2, -1.0f, -0.3, 0.0f));
 
             //part.material->shader->updateUniformValue("material.shininess", part.material->materialProp.shininess);
             part.material->shader->updateUniformValue("material.shininess", part.material->materialProp.shininess);
+
+
 
             // Time vary colours
             glm::vec3 lightColor{1.0f};
@@ -82,10 +83,28 @@ void Model::drawModel()
 
 
 
+
             //part.material->shader->updateUniformValue("objectColor", glm::vec3{1.0f, 0.5f, 0.31f});
-            part.material->shader->updateUniformValue("light.ambient",   ambientColor);
-            part.material->shader->updateUniformValue("light.diffuse",   diffuseColor);
-            part.material->shader->updateUniformValue("light.specular",  lightColor);
+            part.material->shader->updateUniformValue("spotLight.ambient",   ambientColor);
+            part.material->shader->updateUniformValue("spotLight.diffuse",   diffuseColor);
+            part.material->shader->updateUniformValue("spotLight.specular",  lightColor);
+
+            part.material->shader->updateUniformValue("pointLights[0].ambient",   ambientColor);
+            part.material->shader->updateUniformValue("pointLights[0].diffuse",   diffuseColor);
+            part.material->shader->updateUniformValue("pointLights[0].specular",  lightColor);
+            part.material->shader->updateUniformValue("pointLights[0].position",  glm::vec3(1.2f, 1.0, 2.0f));
+
+            part.material->shader->updateUniformValue("pointLights[0].constant",  1.0f);
+            part.material->shader->updateUniformValue("pointLights[0].linear",  0.09f);
+            part.material->shader->updateUniformValue("pointLights[0].quadratic",  0.032f);
+
+
+
+
+            part.material->shader->updateUniformValue("directionalLight.direction",   glm::vec3(-0.2f, -1.0f, -0.3f));
+            part.material->shader->updateUniformValue("directionalLight.ambient",   ambientColor);
+            part.material->shader->updateUniformValue("directionalLight.diffuse",   diffuseColor);
+            part.material->shader->updateUniformValue("directionalLight.specular",  lightColor);
 
         }
 

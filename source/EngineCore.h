@@ -174,6 +174,20 @@ void EngineCore<T>::runLoop()
         for (auto const& shader : shadersToUpdate)
         {
             shader->useProgram();
+
+            // For SpotLight
+            //std::cout << "Shader name: " << shader->getShaderName() << std::endl;
+
+            if (shader->getShaderName() == "normalObject")
+            {
+                shader->updateUniformValue("spotLight.position", windowModule->getCameraInstance()->getCameraPosition());
+                shader->updateUniformValue("spotLight.direction", windowModule->getCameraInstance()->getCameraFront());
+                shader->updateUniformValue("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+                shader->updateUniformValue("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+            }
+
+
+
 	        shader->updateViewMatrixValue(windowModule->getCameraInstance()->calculateViewMatrix());
 		    shader->updateProjectionMatrixValue(windowModule->getCameraInstance()->calculateProjectionMatrix());
             

@@ -127,6 +127,11 @@ class Camera
             return cameraState.orientationVectors.cameraPosition;
         }
 
+        glm::vec3 getCameraFront()
+        {
+            return cameraState.orientationVectors.cameraFront;
+        }
+
     private:
         CameraState cameraState;
      
