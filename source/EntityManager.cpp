@@ -1,8 +1,17 @@
+#include <iostream>
 #include "EntityManager.h"
 
 EntityManager::EntityManager()
 {
     nextID = 0;
+}
+
+void EntityManager::generateNewEntity()
+{
+    uint32_t newID = getNewID();
+
+    activeIDs.push_back(newID);
+    sparse[newID] = static_cast<uint32_t>(activeIDs.size() - 1);
 }
 
 uint32_t EntityManager::getNewID()
@@ -20,27 +29,16 @@ uint32_t EntityManager::getNewID()
 
 void EntityManager::deleteEntity(uint32_t entity)
 {
-    size_t position = getEntityPosition(entity); // get position
-    std::swap(activeIDs[position], activeIDs.back()); // swap with back of vector
-    activeIDs.pop_back(); // remove from back
+    uint32_t position = sparse[entity]; // get position
+    uint32_t backValue = activeIDs.back(); // get back value
+
+    activeIDs[position] = backValue; // Move back data into position of deleted data
+    sparse[backValue] = position;
+
+    activeIDs.pop_back(); // remove from back ID
+
+    sparse[entity] = UINT32_MAX;
 
     recyclingBucket.push_back(entity); 
 
 }
-
-size_t EntityManager::getEntityPosition(uint32_t entity)
-{
-    auto it = std::find(activeIDs.begin(), activeIDs.end(), entity);
-
-    if (it != activeIDs.end())
-    {
-        return (it - activeIDs.begin());
-    }
-
-    #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "ERROR::Entity not found returning UINT32_MAX because something has gone wrong." << std::endl;
-    #endif
-
-    return UINT32_MAX; // Need a handler for this error;
-}
-

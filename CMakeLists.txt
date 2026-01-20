@@ -21,6 +21,7 @@ set(SRC_FILES
 	source/TextureManager.cpp
 	source/Renderer.cpp
     source/Movement.cpp
+	source/EntityManager.cpp
     ${SHADER_SRC_DIR}/shader.cpp
 	${SHADER_SRC_DIR}/shaderManager.cpp
 	${ASSETS_SRC_DIR}/GfxAssetsManager.cpp
