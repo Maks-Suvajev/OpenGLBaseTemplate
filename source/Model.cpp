@@ -98,9 +98,6 @@ void Model::drawModel()
             part.material->shader->updateUniformValue("pointLights[0].linear",  0.09f);
             part.material->shader->updateUniformValue("pointLights[0].quadratic",  0.032f);
 
-
-
-
             part.material->shader->updateUniformValue("directionalLight.direction",   glm::vec3(-0.2f, -1.0f, -0.3f));
             part.material->shader->updateUniformValue("directionalLight.ambient",   ambientColor);
             part.material->shader->updateUniformValue("directionalLight.diffuse",   diffuseColor);

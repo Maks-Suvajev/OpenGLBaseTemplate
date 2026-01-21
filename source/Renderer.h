@@ -27,7 +27,6 @@ class Renderer
 
 
     private:
-        std::vector<std::unique_ptr<Model>> models;
     
 
 

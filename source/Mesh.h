@@ -21,11 +21,6 @@ class Mesh
         void drawMesh();
         void bindVAO();
 
-    private:
-        GLuint VAO;
-        GLuint VBO;
-        GLuint EBO;
-
 };
 
 
