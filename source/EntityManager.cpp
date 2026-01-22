@@ -41,4 +41,10 @@ void EntityManager::deleteEntity(uint32_t entity)
 
     recyclingBucket.push_back(entity); 
 
+    // Delete it in all pools
+    for (auto& [key, componentPool] : componentPools)
+    {
+        componentPool->destroyEntity(entity);
+    }
+
 }

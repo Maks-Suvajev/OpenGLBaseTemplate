@@ -14,12 +14,24 @@ struct MeshData
     std::vector<unsigned int> indices;
 };
 
+struct GpuHandles
+{
+    GLuint VAO;
+    GLuint VBO;
+    GLuint EBO;
+    bool useEBO;
+};
+
 class Mesh
 {
     public:
-        Mesh(MeshData initData);
+        Mesh(MeshData&& initData);
         void drawMesh();
         void bindVAO();
+
+
+    private:
+        GpuHandles gpuHandles;
 
 };
 

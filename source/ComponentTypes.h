@@ -1,6 +1,7 @@
 #ifndef COMPONENT_TYPES_H
 #define COMPONENT_TYPES_H
 
+#include "glad.h"
 #include <glm/glm.hpp>
 
 // Component
@@ -33,6 +34,7 @@ struct MeshGPUData
     GLuint VAO;
     GLuint VBO;
     GLuint EBO;
+    bool useEBO;
 };
 
 

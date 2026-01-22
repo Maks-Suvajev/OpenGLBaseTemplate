@@ -17,9 +17,7 @@ class ComponentManager : public IComponentPool
         void initSparseArray(size_t size);
         void resizeSparse(uint32_t entity);
         void addComponent(uint32_t entity, T&& newData);
-        void deleteComponent(uint32_t entity);
-
-        void destroyEntity(uint32_t) override;
+        void destroyEntity(uint32_t entity) override;
 
         std::vector<T> dense;
         std::vector<uint32_t> denseMap; // Maps denseMap structure denseMap[0] tells you what entity is at pos 0 in dense
@@ -28,7 +26,7 @@ class ComponentManager : public IComponentPool
 };
 
 template<typename T>
-void ComponentManager<T>::deleteComponent(uint32_t entity)
+void ComponentManager<T>::destroyEntity(uint32_t entity)
 {
     uint32_t indexToRemove = sparse[entity];
     uint32_t entityAtBack = denseMap.back();
