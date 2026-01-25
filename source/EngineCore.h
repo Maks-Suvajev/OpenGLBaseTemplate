@@ -1,22 +1,35 @@
 #ifndef ENGINE_CORE_H
 #define ENGINE_CORE_H
 
-// System includes
+// STL
 #include <memory> //For pointers
-#include "Window.h"
-#include "Renderer.h"
-#include "ShaderManager.h"
-#include "GfxAssetsManager.h"
-#include "Model.h"
-#include "TextureManager.h"
-#include "Movement.h"
 #include <deque>
 #include <vector>
 #include <string>
 
+// OS access 
+#include "Window.h"
 
-// Vertices and test positions for cube
-#include "Cube.h"
+// Resource managers
+#include "ShaderManager.h"
+#include "GfxAssetsManager.h"
+#include "TextureManager.h"
+#include "MeshManager.h"
+#include "MaterialManager.h"
+
+// Entities
+#include "EntityManager.h"
+
+// Components
+#include "ComponentManager.h"
+
+// Systems
+#include "Renderer.h"
+#include "Movement.h"
+
+// Test data loader
+#include "Test.h"
+
 
 // use glm::vec3 for 3D and glm::vec2 for 2D
 template<typename T>
@@ -29,19 +42,39 @@ class EngineCore
 
     private:
 
-        std::unique_ptr<gfx::GfxAssetsManager>  gfxAssetsManagerModule;
+        // Window
         std::unique_ptr<gfx::Window>            windowModule;
-        std::unique_ptr<gfx::ShaderManager>     shaderManagerModule;
-        std::unique_ptr<gfx::TextureManager>    textureManagerModule;
-        std::unique_ptr<gfx::Renderer>          renderModule;
 
-        std::unique_ptr<gfx::Movement>          movementModule;
+        // Asset management
+        std::unique_ptr<gfx::GfxAssetsManager>  gfxAssetsManagerModule; // loads and stores paths for different assets
+        std::unique_ptr<gfx::ShaderManager>     shaderManagerModule; // Manages compiling, storing and accessing shaders
+        std::unique_ptr<gfx::TextureManager>    textureManagerModule; // Manages loading and storing textures
+        std::unique_ptr<gfx::MeshManager>       meshManagerModule; // Manages loading and storing Meshes
+        std::unique_ptr<gfx::MaterialManager>   materialManagerModule; // Manages storing different material configurations
 
-        
-        std::deque<gfx::Transform> objectTransforms; //TODO: temporary store for transforms. For entity handler
+        // Systems
+        std::unique_ptr<gfx::Renderer>          renderModule; // Renders renderable components
+        std::unique_ptr<gfx::Movement>          movementModule; // Controls movement of entities based on inputs and physics
 
-        std::vector<gfx::ModelInitData> populateRenderInitVector(); //TODO: replace with entity handler
+        // Components
+        std::unique_ptr<EntityManager>          entityManagerModule; // Manages entities and their lifetimes
+        std::unique_ptr<ComponentManager>       componentManagerModule; // Manages components and their lifetimes
+
+        // Test
+        std::unique_ptr<Test>                   testModule;
+        void initTestModule();
 };
+
+template<typename T>
+void EngineCore<T>::initTestModule()
+{
+    TestObjects testObjects;
+    testObjects.entityManager   = entityManagerModule.get();
+    testObjects.materialManager = materialManagerModule.get();
+    testObjects.meshManager     = meshManagerModule.get();
+
+    testModule = std::make_unique<Test>(testObjects);
+}
 
 
 struct testObjectInitData
@@ -148,11 +181,21 @@ EngineCore<T>::EngineCore()
     // Load and compile shaders
     shaderManagerModule = std::make_unique<gfx::ShaderManager>(shaderSources);
     
-    // Populate test data
-    std::vector<gfx::ModelInitData> renderInitVector = populateRenderInitVector();
+    // Init mesh manager
+    meshManagerModule = std::make_unique<gfx::MeshManager>();
+
+    // Init material manager
+    materialManagerModule = std::make_unique<MaterialManager>();
+
+    // Init entity manager
+    entityManagerModule = std::make_unique<EntityManager>();
+
+    initTestModule();
+
+    Test->initTestData();
 
     // Initialise renderer with test data
-    renderModule = std::make_unique<gfx::Renderer>(renderInitVector);
+    renderModule = std::make_unique<gfx::Renderer>();
 
     movementModule = std::make_unique<gfx::Movement>();
 }

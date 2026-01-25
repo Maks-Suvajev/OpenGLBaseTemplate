@@ -1,8 +1,14 @@
 #ifndef COMPONENT_MANAGER
 #define COMPONENT_MANAGER
 
+// STL
 #include <vector>
+#include <optional>
+
+// Parent class
 #include "IComponentPool.h"
+
+#include "Entity.h"
 
 constexpr uint32_t initialSparseCapacity = 10000U;
 
@@ -14,10 +20,11 @@ class ComponentManager : public IComponentPool
 
 
     private:
-        void initSparseArray(size_t size);
-        void resizeSparse(uint32_t entity);
-        void addComponent(uint32_t entity, T&& newData);
-        void destroyEntity(uint32_t entity) override;
+        void   initSparseArray(size_t size);
+        void   resizeSparse(Entity entity);
+        void   addComponent(Entity entity, T&& newData);
+        void   destroyEntity(Entity entity) override;
+        std::optional<T&>     getComponentData(Entity entity);
 
         std::vector<T> dense;
         std::vector<uint32_t> denseMap; // Maps denseMap structure denseMap[0] tells you what entity is at pos 0 in dense
@@ -26,24 +33,28 @@ class ComponentManager : public IComponentPool
 };
 
 template<typename T>
-void ComponentManager<T>::destroyEntity(uint32_t entity)
+void ComponentManager<T>::destroyEntity(Entity entity)
 {
-    uint32_t indexToRemove = sparse[entity];
-    uint32_t entityAtBack = denseMap.back();
+    uint32_t indexToRemove = sparse[entity]; // index in dense to remove
+    uint32_t entityAtBack = denseMap.back(); // get entity ID that's at the back
     
-    dense[indexToRemove] = dense.back();
-    denseMap[indexToRemove] = entityAtBack;
+    // Swap positions so deleted entity is replaced by back one
+    dense[indexToRemove] = dense.back(); 
+    denseMap[indexToRemove] = entityAtBack; 
     sparse[entityAtBack] = indexToRemove;
     
+    // Remove superfluous entity
     dense.pop_back();
     denseMap.pop_back();
-    sparse[entity] = UINT32_MAX;
+
+    // Mark entity as deleted
+    sparse[entity] = maxEntityValue;
 }
 
 template<typename T>
 void ComponentManager<T>::initSparseArray(size_t size)
 {
-    sparse.assign(size, UINT32_MAX);
+    sparse.assign(size, maxEntityValue);
 }
 
 template<typename T>
@@ -53,24 +64,24 @@ ComponentManager<T>::ComponentManager()
 }
 
 template<typename T>
-void ComponentManager<T>::resizeSparse(uint32_t entity)
+void ComponentManager<T>::resizeSparse(Entity entity)
 {
     // Double the size of the sparse vector unless entityID is higher
     size_t newSize = std::max(static_cast<size_t>(entity + 1), static_cast<size_t>(sparse.size()) * 2);
 
-    sparse.resize(newSize, UINT32_MAX);
+    sparse.resize(newSize, maxEntityValue);
 }
 
 
 template<typename T>
-void ComponentManager<T>::addComponent(uint32_t entity, T&& newData)
+void ComponentManager<T>::addComponent(Entity entity, T&& newData)
 {
     if (entity >= sparse.size())
     {
         resizeSparse(entity);
     }
 
-    if (sparse[entity] == UINT32_MAX)
+    if (sparse[entity] == maxEntityValue)
     {
         dense.push_back(std::move(newData));
 
@@ -84,6 +95,24 @@ void ComponentManager<T>::addComponent(uint32_t entity, T&& newData)
             std::cout << "ERROR::Entity already exists - doing nothing." << std::endl;
         #endif
     }
+}
+
+template<typename T>
+std::optional<T&> ComponentManager<T>::getComponentData(Entity entity)
+{
+    if (sparse[entity] != maxEntityValue)
+    {
+        return dense[sparse[entity]];
+    }
+    else
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::Entity doesn't have this component." << std::endl;
+        #endif
+
+        return std::nullopt;
+    }
+
 }
 
 #endif

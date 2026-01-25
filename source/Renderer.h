@@ -1,8 +1,13 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Model.h"
 #include <memory>
+
+#include "MeshTypes.h"
+
+
+//TODO:: Modify renderer to take in gpuhandles from mesh types
+
 
 namespace gfx
 {

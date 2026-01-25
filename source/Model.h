@@ -11,28 +11,6 @@ namespace gfx
 {
 
 
-
-struct Part
-{
-    Material* material;
-    Mesh* mesh;
-};
-
-struct MaterialMeshPair
-{
-    Material material;
-    MeshData meshData;
-};
-
-
-struct ModelInitData
-{
-    Transform* transform;
-    std::vector<MaterialMeshPair> materialMeshPairs;
-};
-
-
-
 class Model
 {
     public:

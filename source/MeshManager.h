@@ -3,25 +3,20 @@
 
 #include <unordered_map>
 #include <string>
+
 #include "Mesh.h"
 
 namespace gfx
 {
-
-struct MeshEntry
-{
-    std::string name;
-    MeshData meshData;
-};
 
 class MeshManager
 {
     public:
         MeshManager() = default;
         MeshManager(std::vector<MeshEntry>&& meshList);
-        //TODO: Next thought - should i take in a vector for initing also? be all polymorphic?
         void addMesh(std::string meshName, MeshData&& meshData);
 
+        void printAllMeshNames();
 
     private:
         std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;

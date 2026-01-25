@@ -1,20 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <stdint.h>
-
-
-
-struct Entity
-{
-    
-};
-
-
-
-
-
-
-
+using Entity = uint32_t;
+const Entity maxEntityValue = UINT32_MAX;
 
 #endif

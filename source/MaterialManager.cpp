@@ -3,7 +3,6 @@
 namespace gfx
 {
 
-
 void MaterialManager::addMaterial(std::string name, MaterialProperties&& materialInitProperties)
 {
     if (!materials.contains(name))

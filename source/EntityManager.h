@@ -6,41 +6,112 @@
 #include <unordered_map>
 #include <typeindex>
 #include <typeinfo>
+
 #include "ComponentManager.h"
+
+#include "Entity.h"
 
 class EntityManager
 {
     public:
         EntityManager();
-        uint32_t getNewID();
-        void deleteEntity(uint32_t entity);
-        void generateNewEntity();
+        Entity getNewID();
+        void deleteEntity(Entity entity);
+        Entity generateNewEntity();
 
 
         template<typename T>
-        void addComponentData(uint32_t entity, T componentData);
+        void addComponentData(Entity entity, T&& componentData);
+
+        template<typename T>
+        std::optional<T&> getComponentData(Entity entity);
+
+        template<typename T>
+        std::optional<ComponentManager<T>&> getComponentPool();
 
     private:
         uint32_t nextID;
-        std::vector<uint32_t> recyclingBucket;
-        std::vector<uint32_t> activeIDs;
-        std::vector<uint32_t> sparse;
+        std::vector<Entity> recyclingBucket;
+        std::vector<Entity> activeIDs;
+        std::vector<Entity> sparse;
         std::unordered_map<std::type_index, std::unique_ptr<IComponentPool>> componentPools;
 };
 
 template<typename T>
-void EntityManager::addComponentData(uint32_t entity, T componentData)
+void EntityManager::addComponentData(Entity entity, T&& componentData)
 {
     auto index = std::type_index(typeid(T));
 
-    auto it = componentPools.find(index);
-
-    if (it == componentPools.end())
+    if (!componentPools.contain(index))
     {
-        componentPools[index] = std::make_unique<ComponentManager<T>>();
+        componentPools[index] = static_cast<IComponentPool>(std::make_unique<ComponentManager<T>>());
     }
 
-    static_cast<ComponentManager<T>*>(componentPools[index].get())->addComponent(entity, componentData);
+    static_cast<ComponentManager<T>*>(componentPools[index].get())->addComponent(entity, std::move(componentData));
+}
+
+template<typename T>
+std::optional<T&> getComponentData(Entity entity)
+{
+    auto index = std::type_index(typeid(T));
+
+    if (!componentPools.contains(index))
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::EntityManager::Component requested doesn't exist and has no pool." << std::endl;
+        #endif
+
+        return std::nullopt;
+    }
+
+    auto componentRef = static_cast<ComponentManager<T>*>(componentPools[index].get())->getComponentData(entity);
+
+    if (componentRef)
+    {
+        return componentRef;
+    }
+    else
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::EntityManager::Entity does not have this component" << std::endl;
+        #endif
+
+        return std::nullopt;
+    }
+} 
+
+template<typename T>
+std::optional<ComponentManager<T>&> getComponentPool()
+{
+
+    if (!componentPools.contains(index))
+    {
+
+    }
+    else
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::EntityManager::Component requested doesn't exist and has no pool." << std::endl;
+        #endif
+
+        return std::nullopt;
+    }
+
+}
+
+template<typename T>
+bool poolExists()
+{
+    auto index = std::type_index(typeid(T));
+
+    if (componentPools.contains(index))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 

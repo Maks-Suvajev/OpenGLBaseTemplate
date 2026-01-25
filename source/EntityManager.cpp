@@ -2,35 +2,37 @@
 #include "EntityManager.h"
 
 EntityManager::EntityManager()
+: nextID(0U)
 {
-    nextID = 0;
 }
 
-void EntityManager::generateNewEntity()
+Entity EntityManager::generateNewEntity()
 {
-    uint32_t newID = getNewID();
+    Entity newID = getNewID();
 
     activeIDs.push_back(newID);
-    sparse[newID] = static_cast<uint32_t>(activeIDs.size() - 1);
+    sparse[newID] = static_cast<size_t>(activeIDs.size() - 1);
+
+    return newID;
 }
 
-uint32_t EntityManager::getNewID()
+Entity EntityManager::getNewID()
 {
     if (recyclingBucket.empty())
     {
         return nextID++;
     }
 
-    uint32_t newID = recyclingBucket.back();
+    Entity newID = recyclingBucket.back();
     recyclingBucket.pop_back();
 
     return newID;
 }
 
-void EntityManager::deleteEntity(uint32_t entity)
+void EntityManager::deleteEntity(Entity entity)
 {
-    uint32_t position = sparse[entity]; // get position
-    uint32_t backValue = activeIDs.back(); // get back value
+    size_t position = sparse[entity]; // get position
+    Entity backValue = activeIDs.back(); // get back value
 
     activeIDs[position] = backValue; // Move back data into position of deleted data
     sparse[backValue] = position;
