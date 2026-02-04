@@ -1,30 +1,30 @@
-#ifndef MODEL_H
-#define MODEL_H
+// #ifndef MODEL_H
+// #define MODEL_H
 
-#include "Mesh.h"
-#include <glm/glm.hpp>
-#include <vector>
-#include <memory>
-
-
-namespace gfx
-{
+// #include "Mesh.h"
+// #include <glm/glm.hpp>
+// #include <vector>
+// #include <memory>
 
 
-class Model
-{
-    public:
-        Model(ModelInitData initData);
-
-        void drawModel();
-
-        std::vector<Material*> getMaterials();
+// namespace gfx
+// {
 
 
-    private:
-        void reconstructModelMatrix();
-};
+// class Model
+// {
+//     public:
+//         Model(ModelInitData initData);
 
-}
+//         void drawModel();
 
-#endif
+//         std::vector<Material*> getMaterials();
+
+
+//     private:
+//         void reconstructModelMatrix();
+// };
+
+// }
+
+// #endif

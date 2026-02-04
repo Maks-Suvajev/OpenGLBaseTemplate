@@ -19,10 +19,10 @@ class Test
 {
     public:
         Test(TestObjects& testObjects);
+        void initTestData();
 
     private:
         TestObjects testObjects;
-        void initTestData();
         void initMeshTestData();
         void initMaterialtestData();
         void initEntityTestData();

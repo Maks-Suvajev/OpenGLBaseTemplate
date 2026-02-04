@@ -13,7 +13,7 @@ class Movement
 {
     public:
         Movement() = default;
-        void performTestAnimation(std::deque<gfx::Transform> &objects);
+        //void performTestAnimation(std::deque<gfx::Transform> &objects);
 
 
 };

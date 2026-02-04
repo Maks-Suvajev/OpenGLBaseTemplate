@@ -16,18 +16,13 @@ class Renderer
 {
 
     public:
-        Renderer(std::vector<ModelInitData> modelsToInit);
+        Renderer() = default;
 
-        void drawScene()
-        {
-            for (const auto& model : models)
-            {
-                model->drawModel();
-            }
-        }
+        void renderHandle(GpuHandles& handle);
+        void bindVAO(GLuint VAO);
 
         // Specular calculations require camera position in order to make the calculation.
-        void updateViewPosForSpecularLight(glm::vec3 cameraPos);
+        //void updateViewPosForSpecularLight(glm::vec3 cameraPos);
 
 
 

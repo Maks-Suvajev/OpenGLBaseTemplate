@@ -20,10 +20,10 @@ class ComponentManager : public IComponentPool
 
 
     private:
-        void   initSparseArray(size_t size);
-        void   resizeSparse(Entity entity);
-        void   addComponent(Entity entity, T&& newData);
-        void   destroyEntity(Entity entity) override;
+        void                  initSparseArray(size_t size);
+        void                  resizeSparse(Entity entity);
+        void                  addComponent(Entity entity, T&& newData);
+        void                  destroyEntity(Entity entity) override;
         std::optional<T&>     getComponentData(Entity entity);
 
         std::vector<T> dense;

@@ -1,7 +1,7 @@
 #ifndef ICOMPONENT_POOL
 #define ICOMPONENT_POOL
 
-#include "EntityManager.h"
+#include "Entity.h"
 
 class IComponentPool
 {

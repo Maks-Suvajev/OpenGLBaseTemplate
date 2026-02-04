@@ -39,6 +39,7 @@ class EngineCore
     public:
         EngineCore();
         void runLoop();
+        void initTestModule();
 
     private:
 
@@ -56,13 +57,11 @@ class EngineCore
         std::unique_ptr<gfx::Renderer>          renderModule; // Renders renderable components
         std::unique_ptr<gfx::Movement>          movementModule; // Controls movement of entities based on inputs and physics
 
-        // Components
-        std::unique_ptr<EntityManager>          entityManagerModule; // Manages entities and their lifetimes
-        std::unique_ptr<ComponentManager>       componentManagerModule; // Manages components and their lifetimes
+        // Components and Entities
+        std::unique_ptr<EntityManager>          entityManagerModule; // Manages entities. their components and lifetimes
 
         // Test
         std::unique_ptr<Test>                   testModule;
-        void initTestModule();
 };
 
 template<typename T>
@@ -107,58 +106,58 @@ static const std::vector<testObjectInitData> testData
 };
 
 // Shader file names with specific set name.
-static const std::vector<gfx::ShaderFilenameStrings> shaderFilenames
+static const std::vector<gfx::ShaderProgramFilenameStrings> shaderFilenames
 {
     {"lightSource", "vertexShaderLightTest.vs", "fragmentShaderLightSource.fs"},
     {"normalObject", "vertexShaderLightTest.vs", "fragmentShaderLightTest.fs"}
 };
 
-template<typename T>
-std::vector<gfx::ModelInitData> EngineCore<T>::populateRenderInitVector()
-{
-    std::vector<gfx::ModelInitData>     renderInitVector;
+// template<typename T>
+// std::vector<gfx::ModelInitData> EngineCore<T>::populateRenderInitVector()
+// {
+//     std::vector<gfx::ModelInitData>     renderInitVector;
 
-    for (const auto& testObject : testData)
-    {
-        gfx::ModelInitData                  renderInstance;
-        std::vector<gfx::MaterialMeshPair>  matMeshPairs;
+//     for (const auto& testObject : testData)
+//     {
+//         gfx::ModelInitData                  renderInstance;
+//         std::vector<gfx::MaterialMeshPair>  matMeshPairs;
 
-        // Load initial transform data 
-        gfx::Transform transform { testObject.position, testObject.rotation, testObject.scale };
+//         // Load initial transform data 
+//         gfx::Transform transform { testObject.position, testObject.rotation, testObject.scale };
 
-        objectTransforms.push_back(transform);
-        renderInstance.transform = &objectTransforms.back();
+//         objectTransforms.push_back(transform);
+//         renderInstance.transform = &objectTransforms.back();
 
-        // Configure the material properties
-        gfx::MaterialProperties materialProperties;
-        materialProperties.diffuse = textureManagerModule->getTexture(testObject.diffuseTexture);
-        materialProperties.specular = textureManagerModule->getTexture(testObject.specularTexture);
-        materialProperties.shininess = testObject.shininess;
+//         // Configure the material properties
+//         gfx::MaterialProperties materialProperties;
+//         materialProperties.diffuse = textureManagerModule->getTexture(testObject.diffuseTexture);
+//         materialProperties.specular = textureManagerModule->getTexture(testObject.specularTexture);
+//         materialProperties.shininess = testObject.shininess;
 
-        gfx::Material material {
-             shaderManagerModule->getShaderPtr(testObject.shaderName), 
-             materialProperties, 
-             testObject.isLightSource 
-            };
+//         gfx::Material material {
+//              shaderManagerModule->getShaderPtr(testObject.shaderName), 
+//              materialProperties, 
+//              testObject.isLightSource 
+//             };
 
-        gfx::MeshData mesh;
+//         gfx::MeshData mesh;
 
-        size_t sizeOfCubeData = sizeof(gfx::cubeVertices) / sizeof(gfx::cubeVertices[0]);
+//         size_t sizeOfCubeData = sizeof(gfx::cubeVertices) / sizeof(gfx::cubeVertices[0]);
 
-        mesh.vertices.assign(gfx::cubeVertices, gfx::cubeVertices + sizeOfCubeData);
+//         mesh.vertices.assign(gfx::cubeVertices, gfx::cubeVertices + sizeOfCubeData);
 
-        gfx::MaterialMeshPair matMeshPair { material, mesh };
+//         gfx::MaterialMeshPair matMeshPair { material, mesh };
 
-        std::vector<gfx::MaterialMeshPair> materialMeshVector { matMeshPair };
+//         std::vector<gfx::MaterialMeshPair> materialMeshVector { matMeshPair };
 
-        renderInstance.materialMeshPairs = materialMeshVector;
+//         renderInstance.materialMeshPairs = materialMeshVector;
 
-        renderInitVector.push_back(renderInstance);
+//         renderInitVector.push_back(renderInstance);
 
-    }
+//     }
 
-    return renderInitVector;
-}
+//     return renderInitVector;
+// }
 
 // --------------------------------------------------------------------------------------------
 
@@ -176,7 +175,7 @@ EngineCore<T>::EngineCore()
     textureManagerModule = std::make_unique<gfx::TextureManager>(gfxAssetsManagerModule->getTexturePaths());
 
     // Get the shader paths (from test data)
-    std::vector<gfx::ShaderPaths> shaderSources = gfxAssetsManagerModule->loadShaderPathSet(shaderFilenames);
+    std::vector<gfx::ShaderProgramFilePaths> shaderSources = gfxAssetsManagerModule->loadShaderPathSet(shaderFilenames);
 
     // Load and compile shaders
     shaderManagerModule = std::make_unique<gfx::ShaderManager>(shaderSources);
@@ -185,14 +184,14 @@ EngineCore<T>::EngineCore()
     meshManagerModule = std::make_unique<gfx::MeshManager>();
 
     // Init material manager
-    materialManagerModule = std::make_unique<MaterialManager>();
+    materialManagerModule = std::make_unique<gfx::MaterialManager>();
 
     // Init entity manager
     entityManagerModule = std::make_unique<EntityManager>();
 
     initTestModule();
 
-    Test->initTestData();
+    testModule->initTestData();
 
     // Initialise renderer with test data
     renderModule = std::make_unique<gfx::Renderer>();
@@ -231,14 +230,14 @@ void EngineCore<T>::runLoop()
 
 
 
-	        shader->updateViewMatrixValue(windowModule->getCameraInstance()->calculateViewMatrix());
-		    shader->updateProjectionMatrixValue(windowModule->getCameraInstance()->calculateProjectionMatrix());
+	        //shader->updateViewMatrixValue(windowModule->getCameraInstance()->calculateViewMatrix());
+		    //shader->updateProjectionMatrixValue(windowModule->getCameraInstance()->calculateProjectionMatrix());
             
         }
 	
-        movementModule->performTestAnimation(objectTransforms);
-        renderModule->updateViewPosForSpecularLight(windowModule->getCameraInstance()->getCameraPosition());
-		renderModule->drawScene();
+        //movementModule->performTestAnimation(objectTransforms);
+        //renderModule->updateViewPosForSpecularLight(windowModule->getCameraInstance()->getCameraPosition());
+		//renderModule->drawScene();
 
 		glfwSwapBuffers(windowModule->getGlfwWindow());
 	}

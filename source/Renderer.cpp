@@ -2,29 +2,41 @@
 
 namespace gfx
 {
-    Renderer::Renderer(std::vector<ModelInitData> modelsToInit)
+    // void Renderer::updateViewPosForSpecularLight(glm::vec3 cameraPos)
+    // {
+    //     for (const auto& model : models)
+    //     {   
+    //         std::vector<Material*> materials = model->getMaterials();
+
+    //         for (const auto& material : materials)
+    //         {
+
+    //             if (!material->isLightSource)
+    //             {
+    //                 material->shader->updateUniformValue("viewPos", cameraPos);
+    //             }
+    //         }
+    //     }
+    // }
+
+
+    void Renderer::bindVAO(GLuint VAO)
     {
-        for (auto& modelToInit : modelsToInit)
-        {
-            std::unique_ptr<Model> newModelInstance = std::make_unique<Model>(modelToInit);
-            models.push_back(std::move(newModelInstance));
-        }
+        glBindVertexArray(VAO);
     }
 
-    void Renderer::updateViewPosForSpecularLight(glm::vec3 cameraPos)
+
+    void Renderer::renderHandle(GpuHandles& handle)
     {
-        for (const auto& model : models)
-        {   
-            std::vector<Material*> materials = model->getMaterials();
+        bindVAO(handle.VAO);
 
-            for (const auto& material : materials)
-            {
-
-                if (!material->isLightSource)
-                {
-                    material->shader->updateUniformValue("viewPos", cameraPos);
-                }
-            }
+        if (handle.useEBO)
+        {
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        }
+        else
+        {
+            glDrawArrays(GL_TRIANGLES, 0, 36);
         }
     }
 }

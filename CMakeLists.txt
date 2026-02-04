@@ -22,6 +22,7 @@ set(SRC_FILES
 	source/Renderer.cpp
     source/Movement.cpp
 	source/EntityManager.cpp
+    source/Test.cpp
     ${SHADER_SRC_DIR}/shader.cpp
 	${SHADER_SRC_DIR}/shaderManager.cpp
 	${ASSETS_SRC_DIR}/GfxAssetsManager.cpp
@@ -50,6 +51,12 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECT_NAME="\"${PROJECT_NAM
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLAD_GL_IMPLEMENTATION)
 
+if(MSVC)
+    add_compile_options(/permissive-)
+endif()
+
+#target_compile_options(RenderingEngine PRIVATE /showIncludes)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
@@ -69,3 +76,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 # --------------------------------------- Debug message toggle ---------------------------------------
 add_compile_definitions(ENABLE_DEBUG_MESSAGES)
+add_compile_definitions(TEXTURES_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Assets/textures\")
+add_compile_definitions(SHADER_SOURCE_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Shaders/glsl\")
