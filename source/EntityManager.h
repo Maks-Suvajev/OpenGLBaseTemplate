@@ -19,6 +19,8 @@ class EntityManager
         void deleteEntity(Entity entity);
         Entity generateNewEntity();
 
+        void printActiveEntityIDs();
+        void printActiveEntityComponents(Entity entity);
 
         template<typename T>
         void addComponentData(Entity entity, T&& componentData);
@@ -27,15 +29,18 @@ class EntityManager
         std::optional<T&> getComponentData(Entity entity);
 
         template<typename T>
-        std::optional<ComponentManager<T>&> getComponentPool();
+        ComponentManager<T>* getComponentPool();
 
     private:
+        void resizeSparse(Entity entity);
         uint32_t nextID;
         std::vector<Entity> recyclingBucket;
         std::vector<Entity> activeIDs;
         std::vector<Entity> sparse;
         std::unordered_map<std::type_index, std::unique_ptr<IComponentPool>> componentPools;
 };
+
+
 
 template<typename T>
 void EntityManager::addComponentData(Entity entity, T&& componentData)
@@ -44,7 +49,7 @@ void EntityManager::addComponentData(Entity entity, T&& componentData)
 
     if (!componentPools.contains(index))
     {
-        componentPools[index] = static_cast<IComponentPool>(std::make_unique<ComponentManager<T>>());
+        componentPools[index] = std::make_unique<ComponentManager<T>>();
     }
 
     static_cast<ComponentManager<T>*>(componentPools[index].get())->addComponent(entity, std::move(componentData));
@@ -81,7 +86,7 @@ std::optional<T&> EntityManager::getComponentData(Entity entity)
 } 
 
 template<typename T>
-std::optional<ComponentManager<T>&> EntityManager::getComponentPool()
+ComponentManager<T>* EntityManager::getComponentPool()
 {
     auto index = std::type_index(typeid(T));
 
@@ -91,12 +96,10 @@ std::optional<ComponentManager<T>&> EntityManager::getComponentPool()
             std::cout << "ERROR::EntityManager::Component requested doesn't exist and has no pool." << std::endl;
         #endif
 
-        return std::nullopt;
+        return nullptr;
     }
-    else
-    {
-        return componentPools[index];
-    }
+
+    return static_cast<ComponentManager<T>*>(componentPools[index].get());
 }
 
 

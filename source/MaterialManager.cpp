@@ -17,4 +17,20 @@ void MaterialManager::addMaterial(std::string name, MaterialProperties&& materia
     }
 }
 
+std::optional<Material*> MaterialManager::getMaterial(std::string materialName)
+{
+    if (materials.contains(materialName))
+    {
+        return materials[materialName].get();
+    }
+    else
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::Requested material name does not exist: " << materialName << std::endl;
+        #endif
+
+        return std::nullopt;
+    }
+}
+
 }

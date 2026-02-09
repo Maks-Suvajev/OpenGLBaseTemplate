@@ -25,7 +25,29 @@ std::string TextureManager::extractTextureName(std::filesystem::path texturePath
     return texturePath.filename().string();
 }
 
+void TextureManager::printAllTextures()
+{
+    std::cout << "----------------------------------------------------------------------------" << std::endl;
 
+    std::cout << "| ----- Printing currently available textures and their source paths ----- |" << std::endl;
+
+    for (auto& [key, item] : loadedTextures)
+    {
+        std::cout << "----------------------------------------------------------------------------" << std::endl;
+        std::cout << "Key: " << key << std::endl;
+
+        if (item)
+        {
+            std::cout << "Path: " << item->systemSourcePath.string() << std::endl;
+        }
+        else
+        {
+            std::cout << "Path: NULLPTR" << std::endl;
+        }        
+    }
+
+    std::cout << "----------------------------------------------------------------------------" << std::endl << std::endl;
+}
 
 // Using name as hash, user can load the same texture under different names if they want
 Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, std::string name)
@@ -124,7 +146,6 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
         #endif
 
         stbi_image_free(data);
-
     }
 
     #ifdef ENABLE_DEBUG_MESSAGES

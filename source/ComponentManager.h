@@ -2,6 +2,7 @@
 #define COMPONENT_MANAGER
 
 // STL
+#include <iostream>
 #include <vector>
 #include <optional>
 
@@ -17,20 +18,55 @@ class ComponentManager : public IComponentPool
 {
     public:
         ComponentManager();
-
+        void                  addComponent(Entity entity, T&& newData);
+        bool                  hasEntity(Entity entity) const override;
+        void                  destroyEntity(Entity entity) override;
+        T*                    getComponentData(Entity entity);
+        Entity                getEntityID(size_t position);
+        auto                  begin();
+        auto                  end();
 
     private:
         void                  initSparseArray(size_t size);
         void                  resizeSparse(Entity entity);
-        void                  addComponent(Entity entity, T&& newData);
-        void                  destroyEntity(Entity entity) override;
-        std::optional<T&>     getComponentData(Entity entity);
+
 
         std::vector<T> dense;
-        std::vector<uint32_t> denseMap; // Maps denseMap structure denseMap[0] tells you what entity is at pos 0 in dense
-        std::vector<uint32_t> sparse; // Maps entityID to position in denseMap i.e. sparse[2] tells you where entity 2 component is
+        std::vector<Entity> denseMap; // Maps denseMap structure denseMap[0] tells you what entity is at pos 0 in dense
+        std::vector<Entity> sparse; // Maps entityID to position in dense i.e. sparse[2] tells you where entity 2 component is
 
 };
+
+template<typename T>
+Entity ComponentManager<T>::getEntityID(size_t position)
+{
+    return denseMap[position];
+}
+
+template<typename T>
+auto ComponentManager<T>::begin()
+{
+    return dense.begin();
+}
+
+template<typename T>
+auto ComponentManager<T>::end()
+{
+    return dense.end();
+}
+
+template<typename T>
+bool ComponentManager<T>::hasEntity(Entity entity) const
+{
+    if (sparse[entity] == maxEntityValue)
+    {
+        return false;
+    } 
+    else
+    {
+        return true;
+    }
+}
 
 template<typename T>
 void ComponentManager<T>::destroyEntity(Entity entity)
@@ -87,7 +123,7 @@ void ComponentManager<T>::addComponent(Entity entity, T&& newData)
 
         denseMap.push_back(entity);
 
-        sparse[entity] = dense.size() - 1;
+        sparse[entity] = static_cast<Entity>(dense.size() - 1);
     }
     else 
     {
@@ -98,21 +134,18 @@ void ComponentManager<T>::addComponent(Entity entity, T&& newData)
 }
 
 template<typename T>
-std::optional<T&> ComponentManager<T>::getComponentData(Entity entity)
+T* ComponentManager<T>::getComponentData(Entity entity)
 {
-    if (sparse[entity] != maxEntityValue)
-    {
-        return dense[sparse[entity]];
-    }
-    else
+    if (sparse[entity] == maxEntityValue)
     {
         #ifdef ENABLE_DEBUG_MESSAGES
             std::cout << "ERROR::Entity doesn't have this component." << std::endl;
         #endif
 
-        return std::nullopt;
+        return nullptr;    
     }
 
+    return &dense[sparse[entity]];
 }
 
 #endif

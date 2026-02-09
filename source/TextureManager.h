@@ -33,6 +33,7 @@ class TextureManager
         Texture loadTexture(const std::filesystem::path& texturePath, std::string name);
         std::string extractTextureName(std::filesystem::path texturePath);
         GLuint getTexture(std::string name);
+        void printAllTextures();
 
 
 

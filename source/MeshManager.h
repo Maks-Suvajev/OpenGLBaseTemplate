@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <optional>
 
 #include "Mesh.h"
 
@@ -15,6 +16,8 @@ class MeshManager
         MeshManager() = default;
         MeshManager(std::vector<MeshEntry>&& meshList);
         void addMesh(std::string meshName, MeshData&& meshData);
+
+        std::optional<Mesh*> getMesh(std::string meshName);
 
         void printAllMeshNames();
 

@@ -16,12 +16,15 @@ set(SRC_FILES
     source/main.cpp
     source/Window.cpp
     source/Camera.cpp
-	source/Model.cpp
 	source/Mesh.cpp
 	source/TextureManager.cpp
 	source/Renderer.cpp
+    source/RenderSystem.cpp
     source/Movement.cpp
 	source/EntityManager.cpp
+    source/MeshManager.cpp
+    source/MaterialManager.cpp
+    source/Material.cpp
     source/Test.cpp
     ${SHADER_SRC_DIR}/shader.cpp
 	${SHADER_SRC_DIR}/shaderManager.cpp

@@ -4,10 +4,8 @@
 #include <memory>
 
 #include "MeshTypes.h"
-
-
-//TODO:: Modify renderer to take in gpuhandles from mesh types
-
+#include "MaterialTypes.h"
+#include "Shader.h"
 
 namespace gfx
 {
@@ -18,8 +16,7 @@ class Renderer
     public:
         Renderer() = default;
 
-        void renderHandle(GpuHandles& handle);
-        void bindVAO(GLuint VAO);
+        void render(glm::mat4& modelMatrix, GpuHandles* gpuHandle, gfx::MaterialProperties* material, Shader* shader);
 
         // Specular calculations require camera position in order to make the calculation.
         //void updateViewPosForSpecularLight(glm::vec3 cameraPos);
@@ -27,7 +24,11 @@ class Renderer
 
 
     private:
-    
+        void applyMaterial(gfx::MaterialProperties* material, Shader* shader);
+        void applyLighting(Shader* shader);
+        void draw(bool EBO);
+        void bindVAO(GLuint VAO);
+
 
 
 

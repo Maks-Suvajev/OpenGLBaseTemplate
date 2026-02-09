@@ -24,12 +24,14 @@
 #include "ComponentManager.h"
 
 // Systems
+#include "RenderSystem.h"
 #include "Renderer.h"
 #include "Movement.h"
 
 // Test data loader
+// struct TestObjects;
+// class Test;
 #include "Test.h"
-
 
 // use glm::vec3 for 3D and glm::vec2 for 2D
 template<typename T>
@@ -55,6 +57,7 @@ class EngineCore
 
         // Systems
         std::unique_ptr<gfx::Renderer>          renderModule; // Renders renderable components
+        std::unique_ptr<gfx::RenderSystem>      renderSystemModule; // Syncs rendering, material, mesh and light 
         std::unique_ptr<gfx::Movement>          movementModule; // Controls movement of entities based on inputs and physics
 
         // Components and Entities
@@ -68,6 +71,8 @@ template<typename T>
 void EngineCore<T>::initTestModule()
 {
     TestObjects testObjects;
+    testObjects.textureManager  = textureManagerModule.get();
+    testObjects.shaderManager   = shaderManagerModule.get(); 
     testObjects.entityManager   = entityManagerModule.get();
     testObjects.materialManager = materialManagerModule.get();
     testObjects.meshManager     = meshManagerModule.get();
@@ -193,8 +198,9 @@ EngineCore<T>::EngineCore()
 
     testModule->initTestData();
 
-    // Initialise renderer with test data
     renderModule = std::make_unique<gfx::Renderer>();
+    renderSystemModule = std::make_unique<gfx::RenderSystem>();
+
 
     movementModule = std::make_unique<gfx::Movement>();
 }
@@ -211,39 +217,42 @@ void EngineCore<T>::runLoop()
 
 		windowModule->clearScreen();
 
-        std::vector<gfx::Shader*> shadersToUpdate = shaderManagerModule->getRawShaderPointers();
+        // std::vector<gfx::Shader*> shadersToUpdate = shaderManagerModule->getRawShaderPointers();
 
-        for (auto const& shader : shadersToUpdate)
-        {
-            shader->useProgram();
+        // for (auto const& shader : shadersToUpdate)
+        // {
+        //     shader->useProgram();
 
-            // For SpotLight
-            //std::cout << "Shader name: " << shader->getShaderName() << std::endl;
+        //     // For SpotLight
+        //     //std::cout << "Shader name: " << shader->getShaderName() << std::endl;
 
-            if (shader->getShaderName() == "normalObject")
-            {
-                shader->updateUniformValue("spotLight.position", windowModule->getCameraInstance()->getCameraPosition());
-                shader->updateUniformValue("spotLight.direction", windowModule->getCameraInstance()->getCameraFront());
-                shader->updateUniformValue("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-                shader->updateUniformValue("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
-            }
+        //     if (shader->getShaderName() == "normalObject")
+        //     {
+        //         shader->updateUniformValue("spotLight.position", windowModule->getCameraInstance()->getCameraPosition());
+        //         shader->updateUniformValue("spotLight.direction", windowModule->getCameraInstance()->getCameraFront());
+        //         shader->updateUniformValue("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+        //         shader->updateUniformValue("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+        //     }
 
 
 
-	        //shader->updateViewMatrixValue(windowModule->getCameraInstance()->calculateViewMatrix());
-		    //shader->updateProjectionMatrixValue(windowModule->getCameraInstance()->calculateProjectionMatrix());
+	    //     //shader->updateViewMatrixValue(windowModule->getCameraInstance()->calculateViewMatrix());
+		//     //shader->updateProjectionMatrixValue(windowModule->getCameraInstance()->calculateProjectionMatrix());
             
-        }
+        // }
 	
         //movementModule->performTestAnimation(objectTransforms);
         //renderModule->updateViewPosForSpecularLight(windowModule->getCameraInstance()->getCameraPosition());
-		//renderModule->drawScene();
+        renderSystemModule->runRender(windowModule.get(), renderModule.get(), entityManagerModule.get(), shaderManagerModule.get());
 
 		glfwSwapBuffers(windowModule->getGlfwWindow());
 	}
 
 	glfwTerminate();
 }
+
+
+//#include "Test.h"
 
 #endif
 

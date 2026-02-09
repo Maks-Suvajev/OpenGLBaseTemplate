@@ -6,11 +6,62 @@ EntityManager::EntityManager()
 {
 }
 
+void EntityManager::resizeSparse(Entity entity)
+{
+    // Double the size of the sparse vector unless entityID is higher
+    size_t newSize = std::max(static_cast<size_t>(entity + 1), static_cast<size_t>(sparse.size()) * 2);
+
+    sparse.resize(newSize, maxEntityValue);
+}
+
+
+void EntityManager::printActiveEntityComponents(Entity entity)
+{
+    uint32_t totalComponents = 0U;
+
+    std::cout << "-------------------------------------------" << std::endl;
+    std::cout << "| The entity with ID " << entity << " components:  |" << std::endl;
+    std::cout << "-------------------------------------------" << std::endl;
+
+    for (auto& [id, pool] : componentPools)
+    {
+        if (pool->hasEntity(entity))
+        {
+            ++totalComponents;
+            std::cout << id.name() << std::endl;
+        }
+    }
+
+    std::cout << "-------------------------------------------" << std::endl;
+}
+
+void EntityManager::printActiveEntityIDs()
+{
+    std::cout << "-------------------------------------------" << std::endl;
+    std::cout << "| Currently active entity IDs:            |" << std::endl;
+    std::cout << "-------------------------------------------" << std::endl;
+
+    for (auto& id : activeIDs)
+    {
+        std::cout << " " <<  id << " ";
+    }
+
+    std::cout << std::endl;
+    std::cout << "-------------------------------------------" << std::endl;
+}
+
+
 Entity EntityManager::generateNewEntity()
 {
     Entity newID = getNewID();
 
     activeIDs.push_back(newID);
+
+    if (newID >= sparse.size())
+    {
+        resizeSparse(newID);
+    }
+
     sparse[newID] = static_cast<Entity>(activeIDs.size() - 1);
 
     return newID;
