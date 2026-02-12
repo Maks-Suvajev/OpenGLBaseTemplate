@@ -1,8 +1,11 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Model.h"
 #include <memory>
+
+#include "MeshTypes.h"
+#include "MaterialTypes.h"
+#include "Shader.h"
 
 namespace gfx
 {
@@ -11,21 +14,21 @@ class Renderer
 {
 
     public:
-        Renderer(std::vector<ModelInitData> modelsToInit);
+        Renderer() = default;
 
-        void drawScene()
-        {
-            for (const auto& model : models)
-            {
-                model->drawModel();
-            }
-        }
+        void render(glm::mat4& modelMatrix, GpuHandles* gpuHandle, gfx::MaterialProperties* material, Shader* shader);
+
+        // Specular calculations require camera position in order to make the calculation.
+        //void updateViewPosForSpecularLight(glm::vec3 cameraPos);
 
 
 
     private:
-        std::vector<std::unique_ptr<Model>> models;
-    
+        void applyMaterial(gfx::MaterialProperties* material, Shader* shader);
+        void applyLighting(Shader* shader);
+        void draw(uint32_t numVertices, bool EBO);
+        void bindVAO(GLuint VAO);
+
 
 
 

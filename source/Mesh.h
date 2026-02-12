@@ -1,39 +1,25 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "glad.h"
-#include <vector>
 #include "Shader.h"
+#include "MeshTypes.h"
 
 namespace gfx
 {
 
-struct MeshData
-{   
-    std::vector<float> vertices;
-    std::vector<unsigned int> indices;
-};
-
 class Mesh
 {
     public:
-        Mesh(MeshData initData);
-        void drawMesh();
-        void bindVAO();
+        Mesh(MeshData&& initData);
+
+        GpuHandles getGPUHandles()
+        {
+            return gpuHandles;
+        }
 
     private:
-        GLuint VAO;
-        GLuint VBO;
-        GLuint EBO;
-
+        GpuHandles gpuHandles;
 };
-
-
-
-
-
-
-
 
 }
 

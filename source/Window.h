@@ -50,8 +50,6 @@ class Window
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
     static void mouseCallback(GLFWwindow* window, double xPosition, double yPosition);
     static void scrollCallback(GLFWwindow* window, double xOffset, double yOffSet);
-
-
 };
  
 }

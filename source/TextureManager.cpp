@@ -5,19 +5,49 @@
 
 namespace gfx {
 
-TextureManager::TextureManager(std::vector<TextureToLoad> texturesToLoad)
+TextureManager::TextureManager(std::vector<std::filesystem::path> texturePaths)
 {
-    for (const auto& textureToLoad : texturesToLoad)
+    for (const auto& texturePath : texturePaths)
     {
-        Texture loadedTexture = loadTexture(textureToLoad.texturePath, textureToLoad.name);
+        std::string textureName = extractTextureName(texturePath);
+
+        Texture loadedTexture = loadTexture(texturePath, textureName);
 
         if (loadedTexture.textureID != INVALID_TEXTURE_ID)
         {
-            loadedTextures[textureToLoad.name] = std::make_unique<Texture>(std::move(loadedTexture));
+            loadedTextures[textureName] = std::make_unique<Texture>(std::move(loadedTexture));
         }
     }
 }
 
+std::string TextureManager::extractTextureName(std::filesystem::path texturePath)
+{
+    return texturePath.filename().string();
+}
+
+void TextureManager::printAllTextures()
+{
+    std::cout << "----------------------------------------------------------------------------" << std::endl;
+
+    std::cout << "| ----- Printing currently available textures and their source paths ----- |" << std::endl;
+
+    for (auto& [key, item] : loadedTextures)
+    {
+        std::cout << "----------------------------------------------------------------------------" << std::endl;
+        std::cout << "Key: " << key << std::endl;
+
+        if (item)
+        {
+            std::cout << "Path: " << item->systemSourcePath.string() << std::endl;
+        }
+        else
+        {
+            std::cout << "Path: NULLPTR" << std::endl;
+        }        
+    }
+
+    std::cout << "----------------------------------------------------------------------------" << std::endl << std::endl;
+}
 
 // Using name as hash, user can load the same texture under different names if they want
 Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, std::string name)
@@ -116,29 +146,35 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
         #endif
 
         stbi_image_free(data);
-
     }
+
+    #ifdef ENABLE_DEBUG_MESSAGES
+        std::cout << "DEBUG::Successfully loaded texture with key: " << name << std::endl;
+    #endif
 
     return textureData;
 }
 
+GLuint TextureManager::getTexture(std::string name)
+{
+    auto it = loadedTextures.find(name);
+
+    // Check if key exists, also check if unique_ptr is valid that it points to
+    if (it == loadedTextures.end() || !it->second) 
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::Invalid key given: " << name << std::endl;
+        #endif
+
+        return INVALID_TEXTURE_ID;
+    }
+
+    #ifdef ENABLE_DEBUG_MESSAGES
+        std::cout << "DEBUG::Key: " << name << " Texture ID Found: " << loadedTextures[name]->textureID << std::endl;
+    #endif
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return loadedTextures[name]->textureID;
+}
 
 };

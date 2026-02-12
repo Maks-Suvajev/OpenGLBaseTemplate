@@ -2,38 +2,23 @@
 
 # Basic build and clean functionality
 
-if [[ "$1" == "build" || "$1" == "--build" || "$1" == "-build" || "$1" == "" ]]; then
 
 
-	if [[ "$2" == "clean" || "$2" == "--clean" || "$2" == "-clean" || "$2" == "-c" || "$2" == "--c" ]]; then
-		echo "Performing clean build"
-		rm -rf build
-		rm -rf bin
-	fi
-	
+if [[ "$1" == "clean" || "$1" == "--clean" || "$1" == "-clean" || "$1" == "-c" || "$1" == "--c" ]]; then
+
+	echo "Performing clean build"
+	rm -rf build
+	rm -rf bin
+
 	echo "Making new build folder"
 	mkdir build
-	echo "cd build"
-	cd build 
-	echo "Running cmake"
-	cmake ..
-	cmake --build .
-	
-elif [[ "$1" == "clean" || "$1" == "--clean" || "$1" == "-clean" || "$1" == "-c" || "$1" == "--c" ]]; then
-
-	if [ -d "build/" ]; then
-		echo "Deleting build and bin folder"
-		rm -rf build
-		rm -rf bin
-	else
-		echo "Already clean"
-	fi
-  
-else
-	echo "Dunno what happened"
-	exit 1
-  
 fi
+
+echo "cd build"
+cd build
+echo "Running cmake"
+cmake ..
+cmake --build .
 
 exit 0
 

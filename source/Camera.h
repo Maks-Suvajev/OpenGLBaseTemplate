@@ -1,13 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-
+// glm maths lib
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// System access
 #include <GLFW/glfw3.h>
-
-
 
 namespace gfx {
 
@@ -120,6 +119,16 @@ class Camera
         {
             cameraState.resolution.width = width;
             cameraState.resolution.height = height;
+        }
+
+        glm::vec3 getCameraPosition()
+        {
+            return cameraState.orientationVectors.cameraPosition;
+        }
+
+        glm::vec3 getCameraFront()
+        {
+            return cameraState.orientationVectors.cameraFront;
         }
 
     private:
