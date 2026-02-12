@@ -21,7 +21,7 @@ glm::mat4& RenderSystem::updateAndGetModelMatrix(std::vector<gfx::Transform>::it
     return transformIter->modelMatrix;
 }
 
-void RenderSystem::runRender(Window* window, Renderer* renderer, EntityManager* entityManager, ShaderManager* shaderManager)
+void RenderSystem::runRender(Window* window, Renderer* renderer, EntityManager* entityManager, LightingSystem* lightingSystem, ShaderManager* shaderManager)
 {
     auto transformPool = entityManager->getComponentPool<gfx::Transform>();
 
@@ -41,14 +41,14 @@ void RenderSystem::runRender(Window* window, Renderer* renderer, EntityManager* 
         size_t index = std::distance(poolBegin, transformIter);
         Entity entity = transformPool->getEntityID(index);
 
-        auto mesh = getPoolElement<gfx::GpuHandles>(entity, entityManager);
+        auto mesh = entityManager->getPoolElement<gfx::GpuHandles>(entity);
 
         if (mesh != nullptr)
         {
             // Set default mesh
         }
 
-        auto material = getPoolElement<gfx::MaterialProperties>(entity, entityManager);
+        auto material = entityManager->getPoolElement<gfx::MaterialProperties>(entity);
 
         if (material != nullptr)
         {
@@ -64,7 +64,7 @@ void RenderSystem::runRender(Window* window, Renderer* renderer, EntityManager* 
 
         shader->updateViewMatrixValue(window->getCameraInstance()->calculateViewMatrix());
 		shader->updateProjectionMatrixValue(window->getCameraInstance()->calculateProjectionMatrix());
-        
+        lightingSystem->refreshUniforms(shader, entityManager); 
         renderer->render(updateAndGetModelMatrix(transformIter), mesh, material, shader);
     }
 }

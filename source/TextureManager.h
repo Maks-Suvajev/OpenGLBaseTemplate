@@ -35,12 +35,8 @@ class TextureManager
         GLuint getTexture(std::string name);
         void printAllTextures();
 
-
-
     private:
         std::unordered_map<std::string, std::unique_ptr<Texture>> loadedTextures;
-
-
 
 };
 

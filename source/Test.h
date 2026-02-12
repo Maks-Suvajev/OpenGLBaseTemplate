@@ -6,11 +6,13 @@
 #include "TextureManager.h"
 #include "ShaderManager.h"
 #include "EntityManager.h"
+#include "LightingSystem.h"
 
 // Vertices and test positions for cube
 #include "Cube.h"
 #include "MeshTypes.h"
 #include "PhysicsTypes.h"
+#include "LightTypes.h"
 
 struct TestObjects
 {
@@ -19,6 +21,7 @@ struct TestObjects
     gfx::TextureManager*    textureManager;
     gfx::ShaderManager*     shaderManager;
     EntityManager*          entityManager;
+    gfx::LightingSystem*    lightingSystem;
 };
 
 class Test
@@ -36,6 +39,11 @@ class Test
         gfx::MaterialProperties initGenericCubeMaterial();
         gfx::MaterialProperties initLightCubeMaterial();
         gfx::Transform          initCubeTransform();
+
+        void                    initLight();
+        gfx::SpotLight          initSpotLight();
+        gfx::PointLight         initPointLight();
+        gfx::DirectionalLight   initDirectionalLight();
 
         // Manager data init
         void initMeshData();

@@ -1,6 +1,7 @@
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
 
+// STL
 #include <stdint.h>
 #include <vector> 
 #include <unordered_map>
@@ -23,10 +24,10 @@ class EntityManager
         void printActiveEntityComponents(Entity entity);
 
         template<typename T>
-        void addComponentData(Entity entity, T&& componentData);
+        bool addComponentData(Entity entity, T&& componentData);
 
         template<typename T>
-        std::optional<T&> getComponentData(Entity entity);
+        T* getPoolElement(Entity entity);
 
         template<typename T>
         ComponentManager<T>* getComponentPool();
@@ -40,10 +41,8 @@ class EntityManager
         std::unordered_map<std::type_index, std::unique_ptr<IComponentPool>> componentPools;
 };
 
-
-
 template<typename T>
-void EntityManager::addComponentData(Entity entity, T&& componentData)
+bool EntityManager::addComponentData(Entity entity, T&& componentData)
 {
     auto index = std::type_index(typeid(T));
 
@@ -52,38 +51,34 @@ void EntityManager::addComponentData(Entity entity, T&& componentData)
         componentPools[index] = std::make_unique<ComponentManager<T>>();
     }
 
-    static_cast<ComponentManager<T>*>(componentPools[index].get())->addComponent(entity, std::move(componentData));
+    return static_cast<ComponentManager<T>*>(componentPools[index].get())->addComponent(entity, std::move(componentData));
 }
 
 template<typename T>
-std::optional<T&> EntityManager::getComponentData(Entity entity)
+T* EntityManager::getPoolElement(Entity entity)
 {
-    auto index = std::type_index(typeid(T));
+    auto pool = getComponentPool<T>();
 
-    if (!componentPools.contains(index))
+    if (pool == nullptr)
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "ERROR::EntityManager::Component requested doesn't exist and has no pool." << std::endl;
+            std::cout << "ERROR::RenderSystem::getPoolElement::No pool for type found: " << typeid(T).name() << std::endl;
         #endif
-
-        return std::nullopt;
     }
 
-    auto componentRef = static_cast<ComponentManager<T>*>(componentPools[index].get())->getComponentData(entity);
+    auto component = pool->getComponentData(entity);
 
-    if (componentRef)
-    {
-        return componentRef;
-    }
-    else
+    if (component == nullptr)
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "ERROR::EntityManager::Entity does not have this component" << std::endl;
+            std::cout << "ERROR::RenderSystem::getPoolElement::Entity component has no value for some reason." << std::endl;
         #endif
 
-        return std::nullopt;
+        return nullptr;        
     }
-} 
+    
+    return component;
+}
 
 template<typename T>
 ComponentManager<T>* EntityManager::getComponentPool()

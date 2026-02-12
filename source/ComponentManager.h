@@ -18,7 +18,7 @@ class ComponentManager : public IComponentPool
 {
     public:
         ComponentManager();
-        void                  addComponent(Entity entity, T&& newData);
+        bool                  addComponent(Entity entity, T&& newData);
         bool                  hasEntity(Entity entity) const override;
         void                  destroyEntity(Entity entity) override;
         T*                    getComponentData(Entity entity);
@@ -62,10 +62,8 @@ bool ComponentManager<T>::hasEntity(Entity entity) const
     {
         return false;
     } 
-    else
-    {
-        return true;
-    }
+
+    return true;
 }
 
 template<typename T>
@@ -110,7 +108,7 @@ void ComponentManager<T>::resizeSparse(Entity entity)
 
 
 template<typename T>
-void ComponentManager<T>::addComponent(Entity entity, T&& newData)
+bool ComponentManager<T>::addComponent(Entity entity, T&& newData)
 {
     if (entity >= sparse.size())
     {
@@ -124,13 +122,15 @@ void ComponentManager<T>::addComponent(Entity entity, T&& newData)
         denseMap.push_back(entity);
 
         sparse[entity] = static_cast<Entity>(dense.size() - 1);
+
+        return true;
     }
-    else 
-    {
-        #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "ERROR::Entity already exists - doing nothing." << std::endl;
-        #endif
-    }
+
+    #ifdef ENABLE_DEBUG_MESSAGES
+        std::cout << "ERROR::Entity already exists - doing nothing." << std::endl;
+    #endif
+
+    return false;
 }
 
 template<typename T>

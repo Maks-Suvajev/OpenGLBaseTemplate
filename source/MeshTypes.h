@@ -12,23 +12,25 @@ struct MeshData
 {   
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
+    uint32_t numVertices;
 };
 
+// Component structure
 struct GpuHandles
 {
-    GLuint VAO;
-    GLuint VBO;
-    GLuint EBO;
-    bool useEBO;
+    GLuint   VAO;
+    GLuint   VBO;
+    GLuint   EBO;
+    bool     useEBO;
+    uint32_t numVertices;
 };
 
+// Init structure
 struct MeshEntry
 {
     std::string name;
     MeshData meshData;
 };
-
-
 
 
 }

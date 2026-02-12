@@ -38,36 +38,24 @@ Mesh::Mesh(MeshData&& initData)
     }
     // Define VAO attributes
 
+    //TODO: This is compatible currently only with my predefined cube mesh
     // Define position coords
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    // Normals
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    // Texture coords
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
-
-    // // Define texture coordinates
-    // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
-    // glEnableVertexAttribArray(1);
 
     #ifdef ENABLE_DEBUG_MESSAGES
         std::cout << "DEBUG::Finished mesh init" << std::endl;
     #endif
+
+    gpuHandles.numVertices = initData.numVertices;
 }
-
-// void Mesh::drawMesh()
-// {
-//     bindVAO();
-
-//     glDrawArrays(GL_TRIANGLES, 0, 36);
-
-// }
-
-// void Mesh::bindVAO()
-// {
-//     glBindVertexArray(VAO);
-// }
 
 }

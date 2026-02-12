@@ -20,6 +20,7 @@ set(SRC_FILES
 	source/TextureManager.cpp
 	source/Renderer.cpp
     source/RenderSystem.cpp
+    source/LightingSystem.cpp
     source/Movement.cpp
 	source/EntityManager.cpp
     source/MeshManager.cpp

@@ -16,13 +16,10 @@ class MaterialManager
     public:
         MaterialManager() = default;
         void addMaterial(std::string name, MaterialProperties&& materialInitProperties);
-        std::optional<Material*> getMaterial(std::string materialName);
+        Material* getMaterial(std::string materialName);
 
     private:
         std::unordered_map<std::string, std::unique_ptr<Material>> materials;
-    
-
-
 };
 
 }

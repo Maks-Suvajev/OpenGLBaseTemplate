@@ -18,7 +18,6 @@ struct MaterialProperties
     GLuint shader; // Shader used for the material
     LightingTextures lightingTextures;
     float shininess;
-    bool isLightSource;
 };
 
 }

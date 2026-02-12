@@ -17,20 +17,19 @@ namespace gfx
         printAllMeshNames();
     }
 
-    std::optional<Mesh*> MeshManager::getMesh(std::string meshName)
+    Mesh* MeshManager::getMesh(std::string meshName)
     {
         if (meshes.contains(meshName))
         {
             return meshes[meshName].get();
         }
-        else
-        {
-            #ifdef ENABLE_DEBUG_MESSAGES
-                std::cout << "ERROR::Requested mesh name does not exist: " << meshName << std::endl;
-            #endif
 
-            return std::nullopt;
-        }
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::Requested mesh name does not exist: " << meshName << std::endl;
+        #endif
+
+        return nullptr;
+        
     }
     
     void MeshManager::printAllMeshNames()

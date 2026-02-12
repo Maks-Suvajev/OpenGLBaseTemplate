@@ -5,8 +5,6 @@ namespace gfx {
 
 //TODO: Possibly need to change types used in structures. Static casting a lot of doubles to floats at the moment, maybe should just use floats?
 
-
-
 // 3D camera module, 
 Camera::Camera(float width, float height)
 {

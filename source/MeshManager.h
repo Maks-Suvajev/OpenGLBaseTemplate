@@ -17,13 +17,12 @@ class MeshManager
         MeshManager(std::vector<MeshEntry>&& meshList);
         void addMesh(std::string meshName, MeshData&& meshData);
 
-        std::optional<Mesh*> getMesh(std::string meshName);
+        Mesh* getMesh(std::string meshName);
 
         void printAllMeshNames();
 
     private:
         std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
-
 };
 
 }

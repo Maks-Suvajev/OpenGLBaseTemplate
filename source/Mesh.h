@@ -11,18 +11,14 @@ class Mesh
 {
     public:
         Mesh(MeshData&& initData);
-        //void drawMesh();
-        //void bindVAO();
 
         GpuHandles getGPUHandles()
         {
             return gpuHandles;
         }
 
-
     private:
         GpuHandles gpuHandles;
-
 };
 
 }

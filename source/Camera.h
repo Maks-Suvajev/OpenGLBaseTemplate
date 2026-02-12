@@ -1,13 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-
+// glm maths lib
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// System access
 #include <GLFW/glfw3.h>
-
-
 
 namespace gfx {
 

@@ -19,9 +19,9 @@ void EntityManager::printActiveEntityComponents(Entity entity)
 {
     uint32_t totalComponents = 0U;
 
-    std::cout << "-------------------------------------------" << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
     std::cout << "| The entity with ID " << entity << " components:  |" << std::endl;
-    std::cout << "-------------------------------------------" << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
 
     for (auto& [id, pool] : componentPools)
     {
@@ -32,7 +32,7 @@ void EntityManager::printActiveEntityComponents(Entity entity)
         }
     }
 
-    std::cout << "-------------------------------------------" << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
 }
 
 void EntityManager::printActiveEntityIDs()
@@ -49,7 +49,6 @@ void EntityManager::printActiveEntityIDs()
     std::cout << std::endl;
     std::cout << "-------------------------------------------" << std::endl;
 }
-
 
 Entity EntityManager::generateNewEntity()
 {
@@ -99,5 +98,4 @@ void EntityManager::deleteEntity(Entity entity)
     {
         componentPool->destroyEntity(entity);
     }
-
 }

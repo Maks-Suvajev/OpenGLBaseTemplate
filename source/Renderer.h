@@ -26,7 +26,7 @@ class Renderer
     private:
         void applyMaterial(gfx::MaterialProperties* material, Shader* shader);
         void applyLighting(Shader* shader);
-        void draw(bool EBO);
+        void draw(uint32_t numVertices, bool EBO);
         void bindVAO(GLuint VAO);
 
 
