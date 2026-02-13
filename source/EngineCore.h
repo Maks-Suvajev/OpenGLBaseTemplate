@@ -66,6 +66,13 @@ class EngineCore
         std::unique_ptr<Test>                   testModule;
 };
 
+// Preset shaders for testing - GUI will make it more flexible
+static const std::vector<gfx::ShaderProgramFilenameStrings> shaderFilenames
+{
+    {"lightSource", "vertexShaderLightTest.vs", "fragmentShaderLightSource.fs"},
+    {"normalObject", "vertexShaderLightTest.vs", "fragmentShaderLightTest.fs"}
+};
+
 template<typename T>
 void EngineCore<T>::initTestModule()
 {
@@ -80,13 +87,6 @@ void EngineCore<T>::initTestModule()
     testModule = std::make_unique<Test>(testObjects);
 }
 
-
-// Shader file names with specific set name.
-static const std::vector<gfx::ShaderProgramFilenameStrings> shaderFilenames
-{
-    {"lightSource", "vertexShaderLightTest.vs", "fragmentShaderLightSource.fs"},
-    {"normalObject", "vertexShaderLightTest.vs", "fragmentShaderLightTest.fs"}
-};
 template<typename T>
 EngineCore<T>::EngineCore()
 {

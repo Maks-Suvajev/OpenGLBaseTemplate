@@ -64,10 +64,11 @@ void RenderSystem::runRender(Window* window, Renderer* renderer, EntityManager* 
 
         shader->updateViewMatrixValue(window->getCameraInstance()->calculateViewMatrix());
 		shader->updateProjectionMatrixValue(window->getCameraInstance()->calculateProjectionMatrix());
+
         lightingSystem->refreshUniforms(shader, entityManager); 
+
         renderer->render(updateAndGetModelMatrix(transformIter), mesh, material, shader);
     }
 }
-
 
 }

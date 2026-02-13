@@ -10,6 +10,8 @@
 
 // Vertices and test positions for cube
 #include "Cube.h"
+
+// Components
 #include "MeshTypes.h"
 #include "PhysicsTypes.h"
 #include "LightTypes.h"
@@ -60,9 +62,6 @@ class Test
         // printing
         void printCurrentAssets();
         void printTestInput();
-
-
-
 };
 
 

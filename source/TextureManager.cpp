@@ -173,7 +173,6 @@ GLuint TextureManager::getTexture(std::string name)
         std::cout << "DEBUG::Key: " << name << " Texture ID Found: " << loadedTextures[name]->textureID << std::endl;
     #endif
 
-
     return loadedTextures[name]->textureID;
 }
 
