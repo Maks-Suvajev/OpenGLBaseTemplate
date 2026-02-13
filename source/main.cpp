@@ -2,17 +2,26 @@
 
 #include <glm/glm.hpp>
 
-int main()
+#include <QApplication>
+#include "MainWindow.h"
+
+int main(int argc, char* argv[])
 {
+    QApplication app(argc, argv);
 
-    #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "Debug messages activated!" << std::endl;
-    #endif
+    MainWindow w;
+    w.show();
 
-    std::unique_ptr<EngineCore<glm::vec3>> engineInstance = std::make_unique<EngineCore<glm::vec3>>();
+    return app.exec();
 
-    engineInstance->runLoop();
+    // #ifdef ENABLE_DEBUG_MESSAGES
+    //     std::cout << "Debug messages activated!" << std::endl;
+    // #endif
 
-	return 0;
+    // std::unique_ptr<EngineCore<glm::vec3>> engineInstance = std::make_unique<EngineCore<glm::vec3>>();
+
+    // engineInstance->runLoop();
+
+	// return 0;
 
 }

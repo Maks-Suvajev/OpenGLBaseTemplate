@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 project(RenderingEngine LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -27,11 +27,24 @@ set(SRC_FILES
     source/MaterialManager.cpp
     source/Material.cpp
     source/Test.cpp
+
+    #QT stuff
+    source/MainWindow.h
+    source/MainWindow.cpp
+
+
     ${SHADER_SRC_DIR}/shader.cpp
 	${SHADER_SRC_DIR}/shaderManager.cpp
 	${ASSETS_SRC_DIR}/GfxAssetsManager.cpp
     ${DEPS_SRC_DIR}/glad/glad.c
 )
+
+# QT INTEGRATION
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 set_source_files_properties(${DEPS_SRC_DIR}/glad/glad.c PROPERTIES LANGUAGE C)
 
@@ -59,7 +72,9 @@ if(MSVC)
     add_compile_options(/permissive-)
 endif()
 
-#target_compile_options(RenderingEngine PRIVATE /showIncludes)
+#target_compile_options(RenderingEngine PRIVATE /showIncludes) // Debugging
+
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 20
@@ -71,6 +86,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 target_link_libraries(${PROJECT_NAME}
     ${DEPS_LIB_DIR}/GLFW/glfw3.lib
     opengl32
+    Qt6::Widgets
 )
 
 # Set output directory
