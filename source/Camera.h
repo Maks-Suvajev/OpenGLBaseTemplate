@@ -5,9 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// System access
-#include <GLFW/glfw3.h>
-
 namespace gfx {
 
 inline constexpr uint16_t windowInitialWidth  = 800; 
@@ -103,7 +100,7 @@ class Camera
 
         void processMouseInput(double xPosition, double yPosition);
         void processScrollInput(double xPosition, double yPosition);
-        void processKeyboardInput(GLFWwindow * glfwWindow);
+        void processKeyboardInput();
 
         glm::mat4 calculateViewMatrix()
         {

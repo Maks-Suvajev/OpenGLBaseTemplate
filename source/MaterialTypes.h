@@ -1,7 +1,7 @@
 #ifndef MATERIAL_TYPES_H
 #define MATERIAL_TYPES_H
 
-#include "glad.h"
+#include <qopengl.h>
 
 namespace gfx
 {

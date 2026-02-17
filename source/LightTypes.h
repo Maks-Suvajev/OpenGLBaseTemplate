@@ -1,7 +1,6 @@
 #ifndef LIGHT_TYPES_H
 #define LIGHT_TYPES_H
 
-#include "glad.h"
 #include <glm/glm.hpp>
 
 namespace gfx

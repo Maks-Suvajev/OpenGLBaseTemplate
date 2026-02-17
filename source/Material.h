@@ -3,8 +3,6 @@
 
 #include <utility>
 
-#include "glad/glad.h"
-
 #include "MaterialTypes.h"
 
 namespace gfx

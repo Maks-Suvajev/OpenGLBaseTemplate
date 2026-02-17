@@ -2,20 +2,25 @@
 
 namespace gfx
 {
+    Renderer::Renderer(QOpenGLExtraFunctions* openGLFunctions)
+        : m_openGLFunctions(openGLFunctions)
+    {
+    }
+
     void Renderer::bindVAO(GLuint VAO)
     {
-        glBindVertexArray(VAO);
+        m_openGLFunctions->glBindVertexArray(VAO);
     }
 
     void Renderer::draw(uint32_t numVertices, bool EBO)
     {
         if (EBO)
         { 
-            glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
+            m_openGLFunctions->glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
         }
         else
         {
-            glDrawArrays(GL_TRIANGLES, 0, numVertices);
+            m_openGLFunctions->glDrawArrays(GL_TRIANGLES, 0, numVertices);
         }
     }
 
@@ -25,12 +30,12 @@ namespace gfx
         shader->updateUniformValue("material.shininess", material->shininess);
 
         shader->updateUniformValue("material.diffuse", 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material->lightingTextures.diffuse);
+        m_openGLFunctions->glActiveTexture(GL_TEXTURE0);
+        m_openGLFunctions->glBindTexture(GL_TEXTURE_2D, material->lightingTextures.diffuse);
 
         shader->updateUniformValue("material.specular", 1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, material->lightingTextures.specular);
+        m_openGLFunctions->glActiveTexture(GL_TEXTURE1);
+        m_openGLFunctions->glBindTexture(GL_TEXTURE_2D, material->lightingTextures.specular);
     }
 
     void Renderer::render(glm::mat4& modelMatrix, GpuHandles* gpuHandle, gfx::MaterialProperties* material, Shader* shader)

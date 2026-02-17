@@ -5,7 +5,8 @@
 
 namespace gfx {
 
-TextureManager::TextureManager(std::vector<std::filesystem::path> texturePaths)
+TextureManager::TextureManager(std::vector<std::filesystem::path> texturePaths, QOpenGLExtraFunctions* openGLFunctions)
+    : m_openGLFunctions(openGLFunctions)
 {
     for (const auto& texturePath : texturePaths)
     {
@@ -68,16 +69,16 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
     GLenum textureFormat;
     GLenum internalFormat; // GPU side format 8-bit vs 16-bit pixel precision. 
 
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    m_openGLFunctions->glGenTextures(1, &textureID);
+    m_openGLFunctions->glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // Set the texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Load image into texture 1 using STB library
     int width, height, nrChannels;
@@ -125,8 +126,8 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
 
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, textureFormat, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        m_openGLFunctions->glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, textureFormat, GL_UNSIGNED_BYTE, data);
+        m_openGLFunctions->glGenerateMipmap(GL_TEXTURE_2D);
 
         textureData.textureID = textureID;
         textureData.textureFormat = textureFormat;
@@ -139,7 +140,7 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
     }
     else
     {
-        glDeleteTextures(1, &textureID);
+        m_openGLFunctions->glDeleteTextures(1, &textureID);
 
         #ifdef ENABLE_DEBUG_MESSAGES
             std::cout << "ERROR::Failed to load texture!" << std::endl;

@@ -1,14 +1,16 @@
 #ifndef TEXTURE_MANAGER_H
 #define TEXTURE_MANAGER_H
 
-
-#include <glad/glad.h>
+// STL
 #include <filesystem>
 #include <unordered_map>
 #include <vector>
 #include <string>
 #include <memory>
 
+//  OpenGL
+#include <qopengl.h>
+#include <QOpenGLExtraFunctions>
 
 namespace gfx 
 {
@@ -29,7 +31,7 @@ struct Texture
 class TextureManager
 {
     public:
-        TextureManager(std::vector<std::filesystem::path> texturePaths);
+        TextureManager(std::vector<std::filesystem::path> texturePaths, QOpenGLExtraFunctions* openGLFunctions );
         Texture loadTexture(const std::filesystem::path& texturePath, std::string name);
         std::string extractTextureName(std::filesystem::path texturePath);
         GLuint getTexture(std::string name);
@@ -37,6 +39,7 @@ class TextureManager
 
     private:
         std::unordered_map<std::string, std::unique_ptr<Texture>> loadedTextures;
+        QOpenGLExtraFunctions* m_openGLFunctions;
 
 };
 

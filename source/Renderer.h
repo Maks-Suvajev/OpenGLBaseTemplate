@@ -8,6 +8,8 @@
 #include "MaterialTypes.h"
 #include "Shader.h"
 
+#include <QOpenGLExtraFunctions>
+
 namespace gfx
 {
 
@@ -15,14 +17,16 @@ class Renderer
 {
 
     public:
-        Renderer() = default;
+        Renderer(QOpenGLExtraFunctions* openGLFunctions);
 
         void render(glm::mat4& modelMatrix, GpuHandles* gpuHandle, gfx::MaterialProperties* material, Shader* shader);
 
     private:
-        void applyMaterial(gfx::MaterialProperties* material, Shader* shader);
+        void applyMaterial(gfx::MaterialProperties* material, Shader* Shader);
         void draw(uint32_t numVertices, bool EBO);
         void bindVAO(GLuint VAO);
+
+        QOpenGLExtraFunctions* m_openGLFunctions;
 };
 
 

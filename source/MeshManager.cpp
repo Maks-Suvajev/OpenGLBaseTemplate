@@ -2,12 +2,10 @@
 
 namespace gfx
 {
-    void MeshManager::addMesh(std::string meshName, MeshData&& meshData)
-    {
-        meshes[meshName] = std::make_unique<Mesh>(std::move(meshData));
-    }
 
-    MeshManager::MeshManager(std::vector<MeshEntry>&& meshList)
+
+    MeshManager::MeshManager(std::vector<MeshEntry>&& meshList, QOpenGLExtraFunctions* openGLFunctions)
+        : m_openGLFunctions(openGLFunctions)
     {
         for (auto& meshEntry : meshList)
         {
@@ -17,11 +15,21 @@ namespace gfx
         printAllMeshNames();
     }
 
+        MeshManager::MeshManager( QOpenGLExtraFunctions* openGLFunctions)
+        : m_openGLFunctions(openGLFunctions)
+    {
+    }
+
+    void MeshManager::addMesh(std::string meshName, MeshData&& meshData)
+    {
+        m_meshes[meshName] = std::make_unique<Mesh>(std::move(meshData), m_openGLFunctions);
+    }
+    
     Mesh* MeshManager::getMesh(std::string meshName)
     {
-        if (meshes.contains(meshName))
+        if (m_meshes.contains(meshName))
         {
-            return meshes[meshName].get();
+            return m_meshes[meshName].get();
         }
 
         #ifdef ENABLE_DEBUG_MESSAGES
@@ -40,7 +48,7 @@ namespace gfx
         std::cout << "Meshes currently loaded:           " << std::endl;
         std::cout << "-----------------------------------" << std::endl;
 
-        for (auto& [key, mesh] : meshes)
+        for (auto& [key, mesh] : m_meshes)
         {
             std::cout << "Mesh name: " << key << std::endl;
 

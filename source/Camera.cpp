@@ -86,18 +86,18 @@ void Camera::processScrollInput(double xOffset, double yOffset)
 		cameraState.fov = highFovLimit;
 }
 
-void Camera::processKeyboardInput(GLFWwindow * glfwWindow)
+void Camera::processKeyboardInput()
 {
-	if (glfwGetKey(glfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(glfwWindow, true);
-	if (glfwGetKey(glfwWindow, GLFW_KEY_W) == GLFW_PRESS)
-        cameraState.orientationVectors.cameraPosition += cameraState.movementSpeed * cameraState.orientationVectors.cameraFront;
-	if (glfwGetKey(glfwWindow, GLFW_KEY_S) == GLFW_PRESS)
-        cameraState.orientationVectors.cameraPosition -= cameraState.movementSpeed * cameraState.orientationVectors.cameraFront;
-	if (glfwGetKey(glfwWindow, GLFW_KEY_A) == GLFW_PRESS)
-        cameraState.orientationVectors.cameraPosition -= glm::normalize(cross(cameraState.orientationVectors.cameraFront, cameraState.orientationVectors.cameraUp)) * cameraState.movementSpeed;
-	if (glfwGetKey(glfwWindow, GLFW_KEY_D) == GLFW_PRESS)
-        cameraState.orientationVectors.cameraPosition += glm::normalize(cross(cameraState.orientationVectors.cameraFront, cameraState.orientationVectors.cameraUp)) * cameraState.movementSpeed;
+	// if (glfwGetKey(glfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	// 	glfwSetWindowShouldClose(glfwWindow, true);
+	// if (glfwGetKey(glfwWindow, GLFW_KEY_W) == GLFW_PRESS)
+    //     cameraState.orientationVectors.cameraPosition += cameraState.movementSpeed * cameraState.orientationVectors.cameraFront;
+	// if (glfwGetKey(glfwWindow, GLFW_KEY_S) == GLFW_PRESS)
+    //     cameraState.orientationVectors.cameraPosition -= cameraState.movementSpeed * cameraState.orientationVectors.cameraFront;
+	// if (glfwGetKey(glfwWindow, GLFW_KEY_A) == GLFW_PRESS)
+    //     cameraState.orientationVectors.cameraPosition -= glm::normalize(cross(cameraState.orientationVectors.cameraFront, cameraState.orientationVectors.cameraUp)) * cameraState.movementSpeed;
+	// if (glfwGetKey(glfwWindow, GLFW_KEY_D) == GLFW_PRESS)
+    //     cameraState.orientationVectors.cameraPosition += glm::normalize(cross(cameraState.orientationVectors.cameraFront, cameraState.orientationVectors.cameraUp)) * cameraState.movementSpeed;
 
 }
 

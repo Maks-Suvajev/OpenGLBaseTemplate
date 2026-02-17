@@ -4,7 +4,7 @@
 #include "Renderer.h"
 
 // system
-#include "Window.h"
+#include "Camera.h"
 
 // Resource managers
 #include "EntityManager.h"
@@ -29,7 +29,7 @@ class RenderSystem
 {
     public:
         RenderSystem() = default;
-        void runRender(Window* window, Renderer* renderer, EntityManager* entityManager, LightingSystem* lightingSystem, ShaderManager* shaderManager);
+        void runRender(Camera* camera, Renderer* renderer, EntityManager* entityManager, LightingSystem* lightingSystem, ShaderManager* shaderManager);
 
     private:
         glm::mat4& updateAndGetModelMatrix(std::vector<gfx::Transform>::iterator& transformIter);

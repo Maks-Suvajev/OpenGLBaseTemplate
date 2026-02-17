@@ -14,7 +14,6 @@ set(ASSETS_SRC_DIR ${CMAKE_SOURCE_DIR}/Assets/source)
 # Add source files
 set(SRC_FILES
     source/main.cpp
-    source/Window.cpp
     source/Camera.cpp
 	source/Mesh.cpp
 	source/TextureManager.cpp
@@ -31,12 +30,12 @@ set(SRC_FILES
     #QT stuff
     source/MainWindow.h
     source/MainWindow.cpp
+    source/Viewport.cpp
 
 
     ${SHADER_SRC_DIR}/shader.cpp
 	${SHADER_SRC_DIR}/shaderManager.cpp
 	${ASSETS_SRC_DIR}/GfxAssetsManager.cpp
-    ${DEPS_SRC_DIR}/glad/glad.c
 )
 
 # QT INTEGRATION
@@ -44,7 +43,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets OpenGLWidgets)
 
 set_source_files_properties(${DEPS_SRC_DIR}/glad/glad.c PROPERTIES LANGUAGE C)
 
@@ -54,8 +53,6 @@ add_executable(${PROJECT_NAME} ${SRC_FILES})
 # Modern include style
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEPS_INCLUDE_DIR}
-    ${DEPS_INCLUDE_DIR}/glad
-    ${DEPS_INCLUDE_DIR}/GLFW
     ${DEPS_INCLUDE_DIR}/glm
     ${DEPS_INCLUDE_DIR}/KHR
     ${DEPS_INCLUDE_DIR}/stb
@@ -84,9 +81,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 # Link the precompiled GLFW and Windows OpenGL lib
 target_link_libraries(${PROJECT_NAME}
-    ${DEPS_LIB_DIR}/GLFW/glfw3.lib
-    opengl32
     Qt6::Widgets
+    Qt6::OpenGL
+    Qt6::OpenGLWidgets
 )
 
 # Set output directory

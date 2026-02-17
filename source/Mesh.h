@@ -4,21 +4,24 @@
 #include "Shader.h"
 #include "MeshTypes.h"
 
+#include <QOpenGLExtraFunctions>
+
 namespace gfx
 {
 
 class Mesh
 {
     public:
-        Mesh(MeshData&& initData);
+        Mesh(MeshData&& initData, QOpenGLExtraFunctions* openGLFunctions);
 
         GpuHandles getGPUHandles()
         {
-            return gpuHandles;
+            return m_gpuHandles;
         }
 
     private:
-        GpuHandles gpuHandles;
+        GpuHandles               m_gpuHandles;
+        QOpenGLExtraFunctions*   m_openGLFunctions;
 };
 
 }

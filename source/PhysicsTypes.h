@@ -1,7 +1,6 @@
 #ifndef PHYSICS_TYPES_H
 #define PHYSICS_TYPES_H
 
-#include "glad.h"
 #include <glm/glm.hpp>
 
 namespace gfx

@@ -1,9 +1,10 @@
 #ifndef MESH_TYPES_H
 #define MESH_TYPES_H
 
-#include "glad/glad.h"
 #include <vector>
 #include <string>
+
+#include <qopengl.h>
 
 namespace gfx
 {

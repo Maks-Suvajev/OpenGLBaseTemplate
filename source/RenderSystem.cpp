@@ -21,7 +21,7 @@ glm::mat4& RenderSystem::updateAndGetModelMatrix(std::vector<gfx::Transform>::it
     return transformIter->modelMatrix;
 }
 
-void RenderSystem::runRender(Window* window, Renderer* renderer, EntityManager* entityManager, LightingSystem* lightingSystem, ShaderManager* shaderManager)
+void RenderSystem::runRender(Camera* camera, Renderer* renderer, EntityManager* entityManager, LightingSystem* lightingSystem, ShaderManager* shaderManager)
 {
     auto transformPool = entityManager->getComponentPool<gfx::Transform>();
 
@@ -43,27 +43,37 @@ void RenderSystem::runRender(Window* window, Renderer* renderer, EntityManager* 
 
         auto mesh = entityManager->getPoolElement<gfx::GpuHandles>(entity);
 
-        if (mesh != nullptr)
+        if (mesh == nullptr)
         {
             // Set default mesh
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::RenderSystem::runRender::mesh is a nullptr" << std::endl;
+            #endif
         }
 
         auto material = entityManager->getPoolElement<gfx::MaterialProperties>(entity);
 
-        if (material != nullptr)
+        if (material == nullptr)
         {
             // Set default material
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::RenderSystem::runRender::material is a nullptr" << std::endl;
+            #endif
         }
 
         Shader* shader = shaderManager->getShaderPtr(material->shader);
 
-        if (material != nullptr)
+        if (shader == nullptr)
         {
             // Set default shader
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "DEBUG::RenderSystem::runRender::shader is a nullptr" << std::endl;
+            #endif
         }
 
-        shader->updateViewMatrixValue(window->getCameraInstance()->calculateViewMatrix());
-		shader->updateProjectionMatrixValue(window->getCameraInstance()->calculateProjectionMatrix());
+        shader->useProgram();
+        shader->updateViewMatrixValue(camera->calculateViewMatrix());
+		shader->updateProjectionMatrixValue(camera->calculateProjectionMatrix());
 
         lightingSystem->refreshUniforms(shader, entityManager); 
 

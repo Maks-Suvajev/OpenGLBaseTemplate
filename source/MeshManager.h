@@ -7,6 +7,9 @@
 
 #include "Mesh.h"
 
+#include <QOpenGLExtraFunctions>
+
+
 namespace gfx
 {
 
@@ -14,7 +17,8 @@ class MeshManager
 {
     public:
         MeshManager() = default;
-        MeshManager(std::vector<MeshEntry>&& meshList);
+        MeshManager(QOpenGLExtraFunctions* openGLFunctions);
+        MeshManager(std::vector<MeshEntry>&& meshList, QOpenGLExtraFunctions* openGLFunctions);
         void addMesh(std::string meshName, MeshData&& meshData);
 
         Mesh* getMesh(std::string meshName);
@@ -22,7 +26,8 @@ class MeshManager
         void printAllMeshNames();
 
     private:
-        std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes;
+        std::unordered_map<std::string, std::unique_ptr<Mesh>> m_meshes;
+        QOpenGLExtraFunctions* m_openGLFunctions;
 };
 
 }

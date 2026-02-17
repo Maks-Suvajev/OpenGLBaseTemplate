@@ -3,7 +3,6 @@
 
 namespace gfx {
 
-//const glm::vec4 initialScreenClearColour = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
 const glm::vec4 initialScreenClearColour = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 
 
@@ -42,7 +41,6 @@ Window::Window(const char * projectName)
         #endif
     } 
 
-    glViewport(0, 0, windowInitialWidth, windowInitialHeight);
 
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
