@@ -155,8 +155,8 @@ gfx::MaterialProperties Test::initGenericCubeMaterial()
     initProperties.shader = testObjects.shaderManager->getShaderID("normalObject");
 
     // lighting texture
-    initProperties.lightingTextures.diffuse = testObjects.textureManager->getTexture("container2.png");
-    initProperties.lightingTextures.specular = testObjects.textureManager->getTexture("container2_specular.png");
+    initProperties.lightingTextures.diffuse = testObjects.textureManager->getTextureID("container2.png");
+    initProperties.lightingTextures.specular = testObjects.textureManager->getTextureID("container2_specular.png");
 
     initProperties.shininess = 1024.0f;
     //initProperties.isLightSource = false;
@@ -180,7 +180,7 @@ void Test::initMeshComponent(Entity entity)
     {
         return;    
     }
-
+ 
     testObjects.entityManager->addComponentData<gfx::GpuHandles>(entity, meshPtr->getGPUHandles());
 }
 

@@ -31,6 +31,8 @@
 #include "Renderer.h"
 #include "Movement.h"
 
+#include "ShaderTypes.h"
+
 // Test data loader
 #include "Test.h"
 

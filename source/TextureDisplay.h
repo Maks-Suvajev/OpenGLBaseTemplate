@@ -20,9 +20,7 @@ class TextureDisplay : public QWidget
         explicit TextureDisplay(gfx::TextureManager* textureManager, QWidget* parent = nullptr);
 
     private:
-        void setUpDetailsPanelDisplayData();
         void setPanelInteractability();
-        void formatDataDisplay();
 
         std::unique_ptr<QVBoxLayout>    m_mainLayout;
         std::unique_ptr<QLabel>         m_detailsLabel;

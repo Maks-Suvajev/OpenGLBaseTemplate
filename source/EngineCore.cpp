@@ -13,7 +13,7 @@ void EngineCore::updateResolution(float width, float height)
 }
 
 // Preset shaders for testing - GUI will make it more flexible
-static const std::vector<gfx::ShaderProgramFilenameStrings> shaderFilenames
+static const std::vector<ShaderProgramFilenameStrings> shaderFilenames
 {
     {"lightSource", "vertexShaderLightTest.vs", "fragmentShaderLightSource.fs"},
     {"normalObject", "vertexShaderLightTest.vs", "fragmentShaderLightTest.fs"}
@@ -40,10 +40,10 @@ void EngineCore::init(QOpenGLExtraFunctions* openGLFunctions)
     m_gfxAssetsManagerModule = std::make_unique<gfx::GfxAssetsManager>();
 
     // Load up all the detected textures
-    m_textureManagerModule = std::make_unique<gfx::TextureManager>(m_gfxAssetsManagerModule->getTexturePaths(), m_openGLFunctions);
+    m_textureManagerModule = std::make_unique<gfx::TextureManager>(m_gfxAssetsManagerModule.get(), m_openGLFunctions);
 
     // Get the shader paths (from test data)
-    std::vector<gfx::ShaderProgramFilePaths> shaderSources = m_gfxAssetsManagerModule->loadShaderPathSet(shaderFilenames);
+    std::vector<ShaderProgramFilePaths> shaderSources = m_gfxAssetsManagerModule->loadShaderPathSet(shaderFilenames);
 
     // Load and compile shaders
     m_shaderManagerModule = std::make_unique<gfx::ShaderManager>(shaderSources, m_openGLFunctions);
@@ -75,13 +75,5 @@ void EngineCore::init(QOpenGLExtraFunctions* openGLFunctions)
 
 void EngineCore::runStep()
 {
-    //m_windowModule->processKeyboardInput(); //TODO: Replaced by QT
-
-    //glfwPollEvents(); //TODO: Replaced by QT
-
-    //m_windowModule->clearScreen(); //
-
     m_renderSystemModule->runRender(m_cameraModule.get(), m_renderModule.get(), m_entityManagerModule.get(), m_lightingSystemModule.get(), m_shaderManagerModule.get());
-
-    //glfwSwapBuffers(windowModule->getGlfwWindow()); //TODO: Replaced by QT
 }

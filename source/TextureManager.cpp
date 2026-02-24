@@ -1,31 +1,42 @@
 #include "TextureManager.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include <iostream>
 
 namespace gfx {
 
-TextureManager::TextureManager(std::vector<std::filesystem::path> texturePaths, QOpenGLExtraFunctions* openGLFunctions)
-    : m_openGLFunctions(openGLFunctions)
+TextureManager::TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunctions* openGLFunctions)
+    : m_openGLFunctions(openGLFunctions),
+      m_assetsManager(assetsManager)
 {
-    for (const auto& texturePath : texturePaths)
+    registerAllTextures();
+    loadAllTextures();
+}
+
+void TextureManager::registerAllTextures()
+{
+    for (const auto& texturePath : m_assetsManager->getTexturePaths())
     {
-        std::string textureName = extractTextureName(texturePath);
-
-        Texture loadedTexture = loadTexture(texturePath, textureName);
-
-        if (loadedTexture.textureID != INVALID_TEXTURE_ID)
-        {
-            m_loadedTextures[textureName] = std::make_unique<Texture>(std::move(loadedTexture));
-        }
+        registerTexture(texturePath, extractTextureName(texturePath));
     }
 
     emit texturesUpdated();
 }
 
+void TextureManager::loadAllTextures()
+{
+    for (const auto& [key, texture] : m_textures)
+    {
+        loadTexture(key);
+    }
+
+    emit texturesUpdated();
+}
+
+
 const std::unordered_map<std::string, std::unique_ptr<Texture>>& TextureManager::getMap()
 {
-    return m_loadedTextures;
+    return m_textures;
 }
 
 
@@ -40,7 +51,7 @@ void TextureManager::printAllTextures()
 
     std::cout << "| ----- Printing currently available textures and their source paths ----- |" << std::endl;
 
-    for (auto& [key, item] : m_loadedTextures)
+    for (auto& [key, item] : m_textures)
     {
         std::cout << "----------------------------------------------------------------------------" << std::endl;
         std::cout << "Key: " << key << std::endl;
@@ -58,118 +69,143 @@ void TextureManager::printAllTextures()
     std::cout << "----------------------------------------------------------------------------" << std::endl << std::endl;
 }
 
-// Using name as hash, user can load the same texture under different names if they want
-Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, std::string name)
+void TextureManager::registerTexture(const std::filesystem::path& texturePath, std::string name)
 {
-    Texture textureData{};
-
-    if (m_loadedTextures.contains(name))
+    if (m_textures.contains(name))
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "DEBUG::Texture already loaded with the key: " << name << std::endl;
-            std::cout << "DEBUG::Returning empty struct" << std::endl;
+            std::cout << "ERROR::Texture already loaded with the key: " << name << std::endl;
         #endif
 
-        return textureData;
+        return;
     }
 
-    GLuint textureID;
-    GLenum textureFormat;
-    GLenum internalFormat; // GPU side format 8-bit vs 16-bit pixel precision. 
+    Texture textureData{};
+    textureData.systemSourcePath = texturePath;
+    m_textures[name] = std::make_unique<Texture>(textureData);     
+}
 
-    m_openGLFunctions->glGenTextures(1, &textureID);
-    m_openGLFunctions->glBindTexture(GL_TEXTURE_2D, textureID);
+
+// Using name as hash, user can load the same texture under different names if they want
+void TextureManager::loadTexture(std::string name)
+{
+    if (!m_textures.contains(name))
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "DEBUG::TextureManager::loadTexture::Texture not found with the key: " << name << std::endl;
+        #endif
+
+        return;
+    }
+
+    Texture* texture = m_textures[name].get();
+
+    if (texture->isLoaded)
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "DEBUG::TextureManager::loadTexture::Texture not found with the key: " << name << std::endl;
+        #endif
+
+        return; // Assume data is correct if it's loaded
+    }
+
+    #ifdef ENABLE_DEBUG_MESSAGES
+        std::cout << "DEBUG::TextureManager::loadTexture::Loading texture path: " << texture->systemSourcePath.string() << std::endl;
+    #endif
+
+    if (!std::filesystem::exists(texture->systemSourcePath))
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "Error::TextureManager::loadTexture::File does not exist: " << texture->systemSourcePath.string() << std::endl;
+        #endif
+
+        texture->loadError = true;
+        return;
+    }
+
+    m_openGLFunctions->glGenTextures(1, &texture->textureID);
+    m_openGLFunctions->glBindTexture(texture->config.textureType, texture->textureID);
 
     // Set the texture wrapping parameters
-    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    m_openGLFunctions->glTexParameteri(texture->config.textureType, GL_TEXTURE_WRAP_S, texture->config.wrapParam_S);
+    m_openGLFunctions->glTexParameteri(texture->config.textureType, GL_TEXTURE_WRAP_T, texture->config.wrapParam_T);
 
     // Set the texture filtering parameters
-    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    m_openGLFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    m_openGLFunctions->glTexParameteri(texture->config.textureType, GL_TEXTURE_MIN_FILTER, texture->config.minFilter);
+    m_openGLFunctions->glTexParameteri(texture->config.textureType, GL_TEXTURE_MAG_FILTER, texture->config.minFilter);
 
     // Load image into texture 1 using STB library
     int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(texture->config.flipOnLoad);
 
-    #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "DEBUG::Loading texture path: " << texturePath.string() << std::endl;
-    #endif
+    unsigned char* data = stbi_load(texture->systemSourcePath.string().c_str(), &width, &height, &nrChannels, 0);
 
-    unsigned char* data = stbi_load(texturePath.string().c_str(), &width, &height, &nrChannels, 0);
+    if (!data)
+    {
+        m_openGLFunctions->glDeleteTextures(1, &texture->textureID);
+        stbi_image_free(data);
 
-    // Assign GL texture format
-    // Using stbi load with 8 bit depth so default to that for internal format for now.
+        texture->isLoaded  = false;
+        texture->loadError = true;
+
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::TextureManager::loadTexture::stbi_load() returned invalid data!" << std::endl;
+        #endif
+    }
+
+    GLenum internalFormat; // GPU side format 8-bit vs 16-bit pixel precision. TODO: Not sure what I might use this for right now
+
     switch(nrChannels)
     {
         case 1:
-            textureFormat = GL_RED;
+            texture->textureFormat = GL_RED;
             internalFormat = GL_R8;
             break;
 
         case 2:
-            textureFormat = GL_RG;
+            texture->textureFormat = GL_RG;
             internalFormat = GL_RG8;
             break;
 
         case 3:
-            textureFormat = GL_RGB;
+            texture->textureFormat = GL_RGB;
             internalFormat = GL_RGB8;
             break;
 
         case 4:
-            textureFormat = GL_RGBA;
+            texture->textureFormat = GL_RGBA;
             internalFormat = GL_RGBA8;
             break;
 
         default:
-            textureFormat = INVALID_TEXTURE_FORMAT;
+            texture->textureFormat = INVALID_TEXTURE_FORMAT;
             internalFormat = INVALID_TEXTURE_FORMAT;
             break;
     }
 
     #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "DEBUG::Number of channels detected = " << nrChannels << std::endl;
+        std::cout << "DEBUG::TextureManager::loadTexture::Number of channels detected = " << nrChannels << std::endl;
     #endif
 
-    if (data)
-    {
-        m_openGLFunctions->glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, textureFormat, GL_UNSIGNED_BYTE, data);
-        m_openGLFunctions->glGenerateMipmap(GL_TEXTURE_2D);
+    m_openGLFunctions->glTexImage2D(texture->config.textureType, 0, internalFormat, width, height, 0, texture->textureFormat, GL_UNSIGNED_BYTE, data);
+    m_openGLFunctions->glGenerateMipmap(texture->config.textureType);
 
-        textureData.textureID = textureID;
-        textureData.textureFormat = textureFormat;
-        textureData.systemSourcePath = texturePath;
-        textureData.width = width;
-        textureData.height = height;
-        textureData.nrChannels = nrChannels;
+    texture->width = width;
+    texture->height = height;
+    texture->nrChannels = nrChannels;
+    texture->isLoaded  = true;
+    texture->loadError = false;
 
-        stbi_image_free(data);
-    }
-    else
-    {
-        m_openGLFunctions->glDeleteTextures(1, &textureID);
+    stbi_image_free(data);
 
-        #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "ERROR::Failed to load texture!" << std::endl;
-        #endif
-
-        stbi_image_free(data);
-    }
-
-    #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "DEBUG::Successfully loaded texture with key: " << name << std::endl;
-    #endif
-
-    return textureData;
 }
 
-GLuint TextureManager::getTexture(std::string name)
+GLuint TextureManager::getTextureID(std::string name)
 {
-    auto it = m_loadedTextures.find(name);
+    auto it = m_textures.find(name);
 
     // Check if key exists, also check if unique_ptr is valid that it points to
-    if (it == m_loadedTextures.end() || !it->second) 
+    if (it == m_textures.end() || !it->second) 
     {
         #ifdef ENABLE_DEBUG_MESSAGES
             std::cout << "ERROR::Invalid key given: " << name << std::endl;
@@ -179,10 +215,10 @@ GLuint TextureManager::getTexture(std::string name)
     }
 
     #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "DEBUG::Key: " << name << " Texture ID Found: " << m_loadedTextures[name]->textureID << std::endl;
+        std::cout << "DEBUG::Key: " << name << " Texture ID Found: " << m_textures[name]->textureID << std::endl;
     #endif
 
-    return m_loadedTextures[name]->textureID;
+    return m_textures[name]->textureID;
 }
 
 };

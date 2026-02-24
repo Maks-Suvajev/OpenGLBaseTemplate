@@ -7,30 +7,23 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <optional>
+#include <iostream>
 
 //  OpenGL
 #include <qopengl.h>
 #include <QOpenGLExtraFunctions>
 
+// QT signals access
 #include <QObject>
 
+#include "TextureTypes.h"
 
+// Asset manager
+#include "GfxAssetsManager.h"
 
 namespace gfx 
 {
-
-constexpr GLenum INVALID_TEXTURE_FORMAT = 0;
-constexpr GLenum INVALID_TEXTURE_ID = 0;
-
-struct Texture
-{
-    GLuint textureID = INVALID_TEXTURE_ID;
-    GLenum textureFormat = INVALID_TEXTURE_FORMAT;
-    int width = 0;
-    int height = 0;
-    int nrChannels = 0;
-    std::filesystem::path systemSourcePath;
-};
 
 class TextureManager : public QObject
 {
@@ -40,17 +33,20 @@ class TextureManager : public QObject
         void texturesUpdated();
 
     public:
-        TextureManager(std::vector<std::filesystem::path> texturePaths, QOpenGLExtraFunctions* openGLFunctions );
-        Texture loadTexture(const std::filesystem::path& texturePath, std::string name);
+        TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunctions* openGLFunctions );
+        void registerTexture(const std::filesystem::path& texturePath, std::string name);
+        void registerAllTextures();
+        void loadTexture(std::string name);
+        void loadAllTextures();
         std::string extractTextureName(std::filesystem::path texturePath);
-        GLuint getTexture(std::string name);
+        GLuint getTextureID(std::string name);
         void printAllTextures();
         const std::unordered_map<std::string, std::unique_ptr<Texture>>& getMap();
 
     private:
-        std::unordered_map<std::string, std::unique_ptr<Texture>> m_loadedTextures;
+        std::unordered_map<std::string, std::unique_ptr<Texture>> m_textures;
         QOpenGLExtraFunctions* m_openGLFunctions;
-
+        GfxAssetsManager* m_assetsManager;
 
 };
 

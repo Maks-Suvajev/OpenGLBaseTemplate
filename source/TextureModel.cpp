@@ -73,8 +73,6 @@ QString TextureModel::decodeTextureFormat(GLenum textureFormat) const
 
 QString TextureModel::formatToolTip(std::string key, gfx::Texture* texture) const
 {
-    QString format = decodeTextureFormat(texture->textureFormat);
-
     return QString(
         "<b>Name:</b> %1<br>"
         "<b>Texture ID:</b> %2<br>"
@@ -84,7 +82,7 @@ QString TextureModel::formatToolTip(std::string key, gfx::Texture* texture) cons
         "<b>Filepath:</b> %7<br>"
     ).arg(key)
     .arg(texture->textureID)
-    .arg(format)
+    .arg(decodeTextureFormat(texture->textureFormat))
     .arg(texture->width)
     .arg(texture->height)
     .arg(texture->nrChannels)
@@ -93,15 +91,13 @@ QString TextureModel::formatToolTip(std::string key, gfx::Texture* texture) cons
 
 QBrush TextureModel::colourBackground(gfx::Texture* texture) const
 {
-    bool isLoaded = false;
-
-    if (isLoaded)
+    if (texture->isLoaded)
     {
-        return QBrush(QColor(0x3E, 0xD6, 0x6E));
+        return QBrush(QColor(0x3E, 0xD6, 0x6E)); // Green
     }
     else
     {
-        return QBrush(QColor(0xD6, 0x55, 0x3E));
+        return QBrush(QColor(0xD6, 0x55, 0x3E)); // Red
     }
 }
 
