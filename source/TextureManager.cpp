@@ -16,10 +16,18 @@ TextureManager::TextureManager(std::vector<std::filesystem::path> texturePaths, 
 
         if (loadedTexture.textureID != INVALID_TEXTURE_ID)
         {
-            loadedTextures[textureName] = std::make_unique<Texture>(std::move(loadedTexture));
+            m_loadedTextures[textureName] = std::make_unique<Texture>(std::move(loadedTexture));
         }
     }
+
+    emit texturesUpdated();
 }
+
+const std::unordered_map<std::string, std::unique_ptr<Texture>>& TextureManager::getMap()
+{
+    return m_loadedTextures;
+}
+
 
 std::string TextureManager::extractTextureName(std::filesystem::path texturePath)
 {
@@ -32,7 +40,7 @@ void TextureManager::printAllTextures()
 
     std::cout << "| ----- Printing currently available textures and their source paths ----- |" << std::endl;
 
-    for (auto& [key, item] : loadedTextures)
+    for (auto& [key, item] : m_loadedTextures)
     {
         std::cout << "----------------------------------------------------------------------------" << std::endl;
         std::cout << "Key: " << key << std::endl;
@@ -55,7 +63,7 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
 {
     Texture textureData{};
 
-    if (loadedTextures.contains(name))
+    if (m_loadedTextures.contains(name))
     {
         #ifdef ENABLE_DEBUG_MESSAGES
             std::cout << "DEBUG::Texture already loaded with the key: " << name << std::endl;
@@ -158,10 +166,10 @@ Texture TextureManager::loadTexture(const std::filesystem::path& texturePath, st
 
 GLuint TextureManager::getTexture(std::string name)
 {
-    auto it = loadedTextures.find(name);
+    auto it = m_loadedTextures.find(name);
 
     // Check if key exists, also check if unique_ptr is valid that it points to
-    if (it == loadedTextures.end() || !it->second) 
+    if (it == m_loadedTextures.end() || !it->second) 
     {
         #ifdef ENABLE_DEBUG_MESSAGES
             std::cout << "ERROR::Invalid key given: " << name << std::endl;
@@ -171,10 +179,10 @@ GLuint TextureManager::getTexture(std::string name)
     }
 
     #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "DEBUG::Key: " << name << " Texture ID Found: " << loadedTextures[name]->textureID << std::endl;
+        std::cout << "DEBUG::Key: " << name << " Texture ID Found: " << m_loadedTextures[name]->textureID << std::endl;
     #endif
 
-    return loadedTextures[name]->textureID;
+    return m_loadedTextures[name]->textureID;
 }
 
 };

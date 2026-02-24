@@ -14,6 +14,7 @@ set(ASSETS_SRC_DIR ${CMAKE_SOURCE_DIR}/Assets/source)
 # Add source files
 set(SRC_FILES
     source/main.cpp
+    source/EngineCore.cpp
     source/Camera.cpp
 	source/Mesh.cpp
 	source/TextureManager.cpp
@@ -31,6 +32,9 @@ set(SRC_FILES
     source/MainWindow.h
     source/MainWindow.cpp
     source/Viewport.cpp
+    source/TextureModel.cpp
+    source/TextureDisplay.cpp
+
 
 
     ${SHADER_SRC_DIR}/shader.cpp

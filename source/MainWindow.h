@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Viewport.h"
+#include "TextureDisplay.h"
 
 // QT libs
 #include <QMainWindow>
@@ -13,16 +14,24 @@
 #include <QWidget>
 #include <QLabel>
 
+// Engine
+#include "EngineCore.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
     public:
-        MainWindow(QWidget *parent = nullptr);
+        explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow() = default;
 
     private:
-        std::unique_ptr<Viewport> m_viewport;
+
+        void setupTexturemanagerDisplay();
+        std::unique_ptr<QVBoxLayout>            m_layout;
+        std::unique_ptr<Viewport>               m_viewport;
+        std::unique_ptr<TextureDisplay>         m_textureDisplay;
+        std::unique_ptr<EngineCore>             m_engine;
 
 
     private slots:  

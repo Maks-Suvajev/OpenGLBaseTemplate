@@ -4,6 +4,7 @@
 
 #include <QApplication>
 #include "MainWindow.h"
+#include "EngineCore.h"
 
 int main(int argc, char* argv[])
 {
@@ -13,15 +14,4 @@ int main(int argc, char* argv[])
     w.show();
 
     return app.exec();
-
-    // #ifdef ENABLE_DEBUG_MESSAGES
-    //     std::cout << "Debug messages activated!" << std::endl;
-    // #endif
-
-    // std::unique_ptr<EngineCore<glm::vec3>> engineInstance = std::make_unique<EngineCore<glm::vec3>>();
-
-    // engineInstance->runLoop();
-
-	// return 0;
-
 }

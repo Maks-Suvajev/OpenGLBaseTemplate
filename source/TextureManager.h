@@ -12,6 +12,10 @@
 #include <qopengl.h>
 #include <QOpenGLExtraFunctions>
 
+#include <QObject>
+
+
+
 namespace gfx 
 {
 
@@ -28,18 +32,25 @@ struct Texture
     std::filesystem::path systemSourcePath;
 };
 
-class TextureManager
+class TextureManager : public QObject
 {
+    Q_OBJECT
+
+    signals:
+        void texturesUpdated();
+
     public:
         TextureManager(std::vector<std::filesystem::path> texturePaths, QOpenGLExtraFunctions* openGLFunctions );
         Texture loadTexture(const std::filesystem::path& texturePath, std::string name);
         std::string extractTextureName(std::filesystem::path texturePath);
         GLuint getTexture(std::string name);
         void printAllTextures();
+        const std::unordered_map<std::string, std::unique_ptr<Texture>>& getMap();
 
     private:
-        std::unordered_map<std::string, std::unique_ptr<Texture>> loadedTextures;
+        std::unordered_map<std::string, std::unique_ptr<Texture>> m_loadedTextures;
         QOpenGLExtraFunctions* m_openGLFunctions;
+
 
 };
 

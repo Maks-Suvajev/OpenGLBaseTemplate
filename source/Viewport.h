@@ -9,19 +9,17 @@
 
 #include "EngineCore.h"
 
-#include <glm/glm.hpp>
-
 class Viewport : public QOpenGLWidget, public QOpenGLExtraFunctions
 {
 
     public:
-        Viewport();
+        Viewport(EngineCore* engine, QWidget* parent = nullptr);
 
     private:
         void clearScreen();
 
-        std::unique_ptr<EngineCore<glm::vec3>>  m_engine;
-        std::unique_ptr<QTimer>                 m_timer;
+        EngineCore*  m_engine;
+        std::unique_ptr<QTimer> m_timer;
 
     protected:
         void initializeGL() override;
