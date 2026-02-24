@@ -28,12 +28,16 @@ class TextureModel : public QAbstractListModel
     
     public:
         explicit TextureModel(gfx::TextureManager* manager, QObject* parent);
-        void updateLoadedTextures();
 
         //QT interface
         int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+        // Button functions
+        void refreshTextures();
+        void loadTexture(std::string name);
+        void unloadTexture(std::string name);
+        
         enum TextureRole
         {
             NameRole          = Qt::DisplayRole,

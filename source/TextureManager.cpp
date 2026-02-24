@@ -33,6 +33,10 @@ void TextureManager::loadAllTextures()
     emit texturesUpdated();
 }
 
+void TextureManager::refreshTextures()
+{
+
+}
 
 const std::unordered_map<std::string, std::unique_ptr<Texture>>& TextureManager::getMap()
 {
@@ -85,9 +89,14 @@ void TextureManager::registerTexture(const std::filesystem::path& texturePath, s
     m_textures[name] = std::make_unique<Texture>(textureData);     
 }
 
+void TextureManager::unloadTexture(std::string name, bool emitUpdate)
+{
+
+}
+
 
 // Using name as hash, user can load the same texture under different names if they want
-void TextureManager::loadTexture(std::string name)
+void TextureManager::loadTexture(std::string name, bool emitUpdate)
 {
     if (!m_textures.contains(name))
     {

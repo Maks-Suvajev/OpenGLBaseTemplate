@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QScrollArea>
+#include <QPushbutton>
 
 #include "TextureModel.h"
 #include "TextureManager.h"
@@ -19,10 +20,16 @@ class TextureDisplay : public QWidget
     public:
         explicit TextureDisplay(gfx::TextureManager* textureManager, QWidget* parent = nullptr);
 
-    private:
-        void setPanelInteractability();
+        void refreshPressed();
+        void loadTexturePressed();
+        void unloadTexturePressed();
+        void dummyButtonPressed();
 
-        std::unique_ptr<QVBoxLayout>    m_mainLayout;
+    private:
+        void createButtonPanel();
+
+        std::unique_ptr<QGridLayout>    m_buttonGridLayout;
+        std::unique_ptr<QHBoxLayout>    m_mainLayout;
         std::unique_ptr<QLabel>         m_detailsLabel;
         std::unique_ptr<QListView>      m_view;
         std::unique_ptr<TextureModel>   m_model;

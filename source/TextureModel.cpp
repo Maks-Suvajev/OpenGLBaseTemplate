@@ -4,7 +4,7 @@ TextureModel::TextureModel(gfx::TextureManager* manager, QObject* parent)
     : QAbstractListModel(parent),
       m_manager(manager)
 {
-    updateLoadedTextures();
+    refreshTextures();
     subscribeToTextureUpdates();
 }
 
@@ -13,17 +13,29 @@ void TextureModel::subscribeToTextureUpdates()
 {
     const auto reload = [this]() {
         beginResetModel();
-        updateLoadedTextures();
+        refreshTextures();
         endResetModel();
     };
 
     connect(m_manager, &gfx::TextureManager::texturesUpdated, this, reload);
 }
 
-
-void TextureModel::updateLoadedTextures()
+void TextureModel::loadTexture(std::string name)
 {
+    std::cout << "Load texture pressed!!" << std::endl;
+}
+
+void TextureModel::unloadTexture(std::string name)
+{
+    std::cout << "Unload texture pressed!!" << std::endl;
+}
+
+void TextureModel::refreshTextures()
+{
+    std::cout << "Refresh textures pressed!!" << std::endl;
+
     std::vector<std::string> currActiveTextures;
+    m_manager->refreshTextures(); //TODO::NOT IMPLEMENTED RIGHT NOW
 
     for (const auto& [key, texture] : m_manager->getMap())
     {
