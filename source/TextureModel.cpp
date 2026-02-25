@@ -5,37 +5,26 @@ TextureModel::TextureModel(gfx::TextureManager* manager, QObject* parent)
       m_manager(manager)
 {
     refreshTextures();
-    subscribeToTextureUpdates();
-}
-
-
-void TextureModel::subscribeToTextureUpdates()
-{
-    const auto reload = [this]() {
-        beginResetModel();
-        refreshTextures();
-        endResetModel();
-    };
-
-    connect(m_manager, &gfx::TextureManager::texturesUpdated, this, reload);
 }
 
 void TextureModel::loadTexture(std::string name)
 {
-    std::cout << "Load texture pressed!!" << std::endl;
+    m_manager->loadTexture(name);
 }
 
 void TextureModel::unloadTexture(std::string name)
 {
-    std::cout << "Unload texture pressed!!" << std::endl;
+    m_manager->unloadTexture(name);
 }
 
 void TextureModel::refreshTextures()
 {
     std::cout << "Refresh textures pressed!!" << std::endl;
 
+    beginResetModel();
+
     std::vector<std::string> currActiveTextures;
-    m_manager->refreshTextures(); //TODO::NOT IMPLEMENTED RIGHT NOW
+    m_manager->refreshTextures(); 
 
     for (const auto& [key, texture] : m_manager->getMap())
     {
@@ -43,6 +32,8 @@ void TextureModel::refreshTextures()
     }
 
     m_activeTextureKeys = currActiveTextures;
+
+    endResetModel();
 }
 
 int TextureModel::rowCount(const QModelIndex &parent) const
@@ -154,7 +145,7 @@ QVariant TextureModel::data(const QModelIndex &index, int role) const
             return QString::fromStdString(texture->systemSourcePath.generic_string());
 
         case LoadedRole:
-            return true; // currently only displaying loaded textures
+            return texture->isLoaded;
 
         default:
             return QVariant();

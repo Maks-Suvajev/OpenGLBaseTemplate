@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <QScrollArea>
 #include <QPushbutton>
+#include <QList>
+#include <QListWidgetItem>
 
 #include "TextureModel.h"
 #include "TextureManager.h"

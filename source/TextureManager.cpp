@@ -10,7 +10,6 @@ TextureManager::TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunc
       m_assetsManager(assetsManager)
 {
     registerAllTextures();
-    loadAllTextures();
 }
 
 void TextureManager::registerAllTextures()
@@ -19,8 +18,6 @@ void TextureManager::registerAllTextures()
     {
         registerTexture(texturePath, extractTextureName(texturePath));
     }
-
-    emit texturesUpdated();
 }
 
 void TextureManager::loadAllTextures()
@@ -29,13 +26,58 @@ void TextureManager::loadAllTextures()
     {
         loadTexture(key);
     }
+}
 
-    emit texturesUpdated();
+
+// Used for cleaning out textures from the map if file is removed from folder
+void TextureManager::deleteTexture(std::string name)
+{
+    m_textures.erase(name);
+}
+
+std::vector<std::string> TextureManager::loadActiveTextureKeys()
+{
+    std::vector<std::string> keys;
+
+    for (const auto& [key, texture] : m_textures)
+    {
+        keys.push_back(key);
+    }
+
+    return keys;
 }
 
 void TextureManager::refreshTextures()
 {
+    std::vector<std::string> oldKeys = loadActiveTextureKeys();
+    std::vector<std::string> newKeys;
 
+    for (const auto& texturePath : m_assetsManager->getTexturePaths())
+    {
+        std::string name = extractTextureName(texturePath);
+
+        auto iter = std::find(oldKeys.begin(), oldKeys.end(), name);
+
+        if (iter == oldKeys.end())
+        {
+            registerTexture(texturePath, name);
+
+        }
+        else
+        {
+            oldKeys.erase(iter);
+        }
+    }
+
+    // Anything left in oldKeys no longer has a source and therefore needs to be deleted 
+    for (const auto& name : oldKeys)
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "ERROR::TextureManager::refreshTextures::Deleting key: " << name << std::endl;
+        #endif
+
+        deleteTexture(name);
+    }
 }
 
 const std::unordered_map<std::string, std::unique_ptr<Texture>>& TextureManager::getMap()
@@ -55,7 +97,7 @@ void TextureManager::printAllTextures()
 
     std::cout << "| ----- Printing currently available textures and their source paths ----- |" << std::endl;
 
-    for (auto& [key, item] : m_textures)
+    for (const auto& [key, item] : m_textures)
     {
         std::cout << "----------------------------------------------------------------------------" << std::endl;
         std::cout << "Key: " << key << std::endl;
@@ -89,14 +131,48 @@ void TextureManager::registerTexture(const std::filesystem::path& texturePath, s
     m_textures[name] = std::make_unique<Texture>(textureData);     
 }
 
-void TextureManager::unloadTexture(std::string name, bool emitUpdate)
-{
 
+void TextureManager::resetTexture(Texture* texture)
+{
+    m_openGLFunctions->glDeleteTextures(1, &texture->textureID);
+
+    texture->textureID     = INVALID_TEXTURE_ID;
+    texture->textureFormat = INVALID_TEXTURE_FORMAT;
+    texture->width         = 0;
+    texture->height        = 0;
+    texture->nrChannels    = 0;
+    texture->isLoaded      = false;
+}
+
+
+void TextureManager::unloadTexture(std::string name)
+{
+    if (!m_textures.contains(name))
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "DEBUG::TextureManager::unloadTexture::Texture not found with the key: " << name << std::endl;
+        #endif
+
+        return;
+    }
+
+    Texture* texture = m_textures[name].get();
+    
+    if (!texture->isLoaded)
+    {
+        #ifdef ENABLE_DEBUG_MESSAGES
+            std::cout << "DEBUG::TextureManager::unloadTexture::Texture already unloaded: " << name << std::endl;
+        #endif
+
+        return;
+    }
+
+    resetTexture(texture);
 }
 
 
 // Using name as hash, user can load the same texture under different names if they want
-void TextureManager::loadTexture(std::string name, bool emitUpdate)
+void TextureManager::loadTexture(std::string name)
 {
     if (!m_textures.contains(name))
     {
@@ -112,7 +188,7 @@ void TextureManager::loadTexture(std::string name, bool emitUpdate)
     if (texture->isLoaded)
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "DEBUG::TextureManager::loadTexture::Texture not found with the key: " << name << std::endl;
+            std::cout << "DEBUG::TextureManager::loadTexture::Textur already loaded: " << name << std::endl;
         #endif
 
         return; // Assume data is correct if it's loaded
@@ -206,7 +282,6 @@ void TextureManager::loadTexture(std::string name, bool emitUpdate)
     texture->loadError = false;
 
     stbi_image_free(data);
-
 }
 
 GLuint TextureManager::getTextureID(std::string name)

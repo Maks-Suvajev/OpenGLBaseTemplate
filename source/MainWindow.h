@@ -33,9 +33,6 @@ class MainWindow : public QMainWindow
         std::unique_ptr<TextureDisplay>         m_textureDisplay;
         std::unique_ptr<EngineCore>             m_engine;
 
-
-    private slots:  
-        void handleButtonClick();
 };
 
 

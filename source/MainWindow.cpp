@@ -10,10 +10,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QLabel* label = new QLabel("Engine Control Panel", this);
     m_layout->addWidget(label);
 
-    QPushButton* button = new QPushButton();
-    m_layout->addWidget(button);
-    connect(button, &QPushButton::clicked, this, &MainWindow::handleButtonClick);
-
     m_engine = std::make_unique<EngineCore>();
     m_viewport = std::make_unique<Viewport>(m_engine.get(), this);
 
@@ -30,16 +26,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 void MainWindow::setupTexturemanagerDisplay()
 {
     const auto setup = [this](){
-        qDebug() << "Lambda Executed"; // Check your console for this!
         m_textureDisplay = std::make_unique<TextureDisplay>(m_engine->getTextureManager(), this);
         m_layout->addWidget(m_textureDisplay.get());
         m_textureDisplay->show();
     };
 
     connect(m_engine.get(), &EngineCore::engineInitialised, this, setup);
-}
-
-void MainWindow::handleButtonClick()
-{
-    std::cout << "Button was clicked!!" << std::endl;
 }

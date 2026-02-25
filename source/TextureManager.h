@@ -36,10 +36,13 @@ class TextureManager : public QObject
         TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunctions* openGLFunctions );
         void registerTexture(const std::filesystem::path& texturePath, std::string name);
         void registerAllTextures();
-        void loadTexture(std::string name, bool emitUpdate = false);
-        void unloadTexture(std::string name, bool emitUpdate = false);
+        void loadTexture(std::string name);
+        void unloadTexture(std::string name);
+        void resetTexture(Texture* texture);
+        void deleteTexture(std::string name);
         void loadAllTextures();
         void refreshTextures();
+        std::vector<std::string> loadActiveTextureKeys();
 
         std::string extractTextureName(std::filesystem::path texturePath);
         GLuint getTextureID(std::string name);
