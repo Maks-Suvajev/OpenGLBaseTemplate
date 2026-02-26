@@ -8,19 +8,7 @@
 #include <QAbstractListModel>
 
 #include "TextureManager.h"
-
-
-/*  TextureRole is a reflection of the Texture struct found within the TextureManager
-struct Texture
-{
-    GLuint textureID = INVALID_TEXTURE_ID;
-    GLenum textureFormat = INVALID_TEXTURE_FORMAT;
-    int width = 0;
-    int height = 0;
-    int nrChannels = 0;
-    std::filesystem::path systemSourcePath;
-};
-*/
+#include "UIColours.h"
 
 class TextureModel : public QAbstractListModel
 {
@@ -33,10 +21,13 @@ class TextureModel : public QAbstractListModel
         int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+        std::filesystem::path getCurrentTextureDirectory();
         // Button functions
         void refreshTextures();
         void loadTexture(std::string name);
         void unloadTexture(std::string name);
+        void updateTexturePath(std::string path);
+
         
         enum TextureRole
         {
@@ -51,10 +42,10 @@ class TextureModel : public QAbstractListModel
         };
         
     private:
-        void subscribeToTextureUpdates();
         QString decodeTextureFormat(GLenum textureFormat) const;
         QString formatToolTip(std::string key, gfx::Texture* texture) const;
         QBrush colourBackground(gfx::Texture* texture) const;
+
 
         gfx::TextureManager*        m_manager;
         std::vector<std::string>    m_activeTextureKeys; 

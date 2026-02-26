@@ -15,7 +15,7 @@
 #include <QOpenGLExtraFunctions>
 
 // QT signals access
-#include <QObject>
+//#include <QObject>
 
 #include "TextureTypes.h"
 
@@ -25,12 +25,12 @@
 namespace gfx 
 {
 
-class TextureManager : public QObject
+class TextureManager //: public QObject
 {
-    Q_OBJECT
+    // Q_OBJECT
 
-    signals:
-        void texturesUpdated();
+    // signals:
+    //     void texturesUpdated();
 
     public:
         TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunctions* openGLFunctions );
@@ -42,9 +42,11 @@ class TextureManager : public QObject
         void deleteTexture(std::string name);
         void loadAllTextures();
         void refreshTextures();
+        void updateTexturePath(std::string path);
         std::vector<std::string> loadActiveTextureKeys();
 
         std::string extractTextureName(std::filesystem::path texturePath);
+        std::filesystem::path getCurrentWorkingDirectory();
         GLuint getTextureID(std::string name);
         void printAllTextures();
         const std::unordered_map<std::string, std::unique_ptr<Texture>>& getMap();

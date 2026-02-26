@@ -7,9 +7,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_layout = std::make_unique<QVBoxLayout>(centralWidget);
 
-    QLabel* label = new QLabel("Engine Control Panel", this);
-    m_layout->addWidget(label);
-
     m_engine = std::make_unique<EngineCore>();
     m_viewport = std::make_unique<Viewport>(m_engine.get(), this);
 
@@ -19,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     setupTexturemanagerDisplay();
 
+    setWidgetColours(this);
     this->setWindowTitle("Rendering Engine");
     this->resize(1280, 720);
 }
@@ -32,4 +30,17 @@ void MainWindow::setupTexturemanagerDisplay()
     };
 
     connect(m_engine.get(), &EngineCore::engineInitialised, this, setup);
+}
+
+
+void MainWindow::setWidgetColours(QWidget* widget)
+{
+    QPalette palette = widget->palette();
+
+    palette.setColor(QPalette::Window, backgroundColour);
+    palette.setColor(QPalette::Base, backgroundColour);
+    palette.setColor(QPalette::Button, buttonColour);
+
+    widget->setPalette(palette);
+    widget->setAutoFillBackground(true);
 }

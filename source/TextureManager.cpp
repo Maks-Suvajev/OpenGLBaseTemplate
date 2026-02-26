@@ -28,6 +28,18 @@ void TextureManager::loadAllTextures()
     }
 }
 
+void TextureManager::updateTexturePath(std::string path)
+{
+    std::filesystem::path filePath(path);
+
+    m_assetsManager->updateTextureFolderPath(filePath);
+}
+
+std::filesystem::path TextureManager::getCurrentWorkingDirectory()
+{
+    return m_assetsManager->getTextureFolderPath();
+}
+
 
 // Used for cleaning out textures from the map if file is removed from folder
 void TextureManager::deleteTexture(std::string name)

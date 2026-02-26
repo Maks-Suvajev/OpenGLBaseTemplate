@@ -9,9 +9,11 @@
 #include <QPushbutton>
 #include <QList>
 #include <QListWidgetItem>
+#include <QFileDialog>
 
 #include "TextureModel.h"
 #include "TextureManager.h"
+#include "UIColours.h"
 
 
 
@@ -22,18 +24,28 @@ class TextureDisplay : public QWidget
     public:
         explicit TextureDisplay(gfx::TextureManager* textureManager, QWidget* parent = nullptr);
 
+    private:
+
         void refreshPressed();
         void loadTexturePressed();
+        void loadAllTexturesPressed();
         void unloadTexturePressed();
-        void dummyButtonPressed();
+        void unloadAllTexturesPressed();
+        void changeDirectoryPressed();
 
-    private:
         void createButtonPanel();
+        template<typename FuncType>
+        void addButtonToPanel(QString label, FuncType function);
+        void addChangeDirectoryButton();
+        void setButtonColours(QWidget* widget);
 
-        std::unique_ptr<QGridLayout>    m_buttonGridLayout;
-        std::unique_ptr<QHBoxLayout>    m_mainLayout;
-        std::unique_ptr<QLabel>         m_detailsLabel;
-        std::unique_ptr<QListView>      m_view;
+        std::unique_ptr<QVBoxLayout>    m_mainLayout; // Main connector layout
+        std::unique_ptr<QVBoxLayout>    m_buttonPanel; // Main functionality panel
+
+        std::unique_ptr<QVBoxLayout>    m_managerViewWithButton; // With change dir button attached
+
+        std::unique_ptr<QListView>      m_managerView;
+        std::unique_ptr<QLabel>         m_detailsLabel; // Hovering data on list member
         std::unique_ptr<TextureModel>   m_model;
 
 };

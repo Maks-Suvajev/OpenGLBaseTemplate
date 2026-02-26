@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
         ~MainWindow() = default;
 
     private:
-
+        void setWidgetColours(QWidget* widget);
         void setupTexturemanagerDisplay();
         std::unique_ptr<QVBoxLayout>            m_layout;
         std::unique_ptr<Viewport>               m_viewport;

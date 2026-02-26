@@ -7,6 +7,12 @@ TextureModel::TextureModel(gfx::TextureManager* manager, QObject* parent)
     refreshTextures();
 }
 
+std::filesystem::path TextureModel::getCurrentTextureDirectory()
+{
+    return m_manager->getCurrentWorkingDirectory();
+}
+
+
 void TextureModel::loadTexture(std::string name)
 {
     m_manager->loadTexture(name);
@@ -39,6 +45,12 @@ void TextureModel::refreshTextures()
 int TextureModel::rowCount(const QModelIndex &parent) const
 {
     return m_activeTextureKeys.size();
+}
+
+void TextureModel::updateTexturePath(std::string path)
+{
+    m_manager->updateTexturePath(path);
+    refreshTextures();
 }
 
 QString TextureModel::decodeTextureFormat(GLenum textureFormat) const
@@ -96,11 +108,11 @@ QBrush TextureModel::colourBackground(gfx::Texture* texture) const
 {
     if (texture->isLoaded)
     {
-        return QBrush(QColor(0x3E, 0xD6, 0x6E)); // Green
+        return QBrush(positiveGreen); // Green
     }
     else
     {
-        return QBrush(QColor(0xD6, 0x55, 0x3E)); // Red
+        return QBrush(negativeRed); // Red
     }
 }
 
