@@ -36,14 +36,15 @@ class TextureDisplay : public QWidget
         void createButtonPanel();
         template<typename FuncType>
         void addButtonToPanel(QString label, FuncType function);
+        void addCurrDirectoryDisplay();
         void addChangeDirectoryButton();
         void setButtonColours(QWidget* widget);
 
+        QLabel* m_displayLabel;
+        QString m_currentDirectory;
         std::unique_ptr<QVBoxLayout>    m_mainLayout; // Main connector layout
         std::unique_ptr<QVBoxLayout>    m_buttonPanel; // Main functionality panel
-
         std::unique_ptr<QVBoxLayout>    m_managerViewWithButton; // With change dir button attached
-
         std::unique_ptr<QListView>      m_managerView;
         std::unique_ptr<QLabel>         m_detailsLabel; // Hovering data on list member
         std::unique_ptr<TextureModel>   m_model;

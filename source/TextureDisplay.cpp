@@ -29,6 +29,7 @@ TextureDisplay::TextureDisplay(gfx::TextureManager* textureManager, QWidget* par
     m_managerView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     m_managerViewWithButton->addWidget(m_managerView.get(), 1);
+    addCurrDirectoryDisplay();
     addChangeDirectoryButton();
 
     QHBoxLayout* main_panel = new QHBoxLayout();
@@ -39,6 +40,24 @@ TextureDisplay::TextureDisplay(gfx::TextureManager* textureManager, QWidget* par
     main_panel->addLayout(m_buttonPanel.get());
 
     m_mainLayout->addLayout(main_panel);
+}
+
+void TextureDisplay::addCurrDirectoryDisplay()
+{
+    QHBoxLayout* layout = new QHBoxLayout();
+
+    m_currentDirectory = QString::fromStdString(m_model->getCurrentTextureDirectory().string());
+
+    QLabel* titleLabel = new QLabel("Current directory: ");
+    m_displayLabel = new QLabel(m_currentDirectory); 
+
+    layout->addWidget(titleLabel);
+    layout->addWidget(m_displayLabel);
+
+    layout->setSpacing(5);
+    layout->addStretch(1);
+
+    m_managerViewWithButton->addLayout(layout);
 }
 
 void TextureDisplay::setButtonColours(QWidget* widget)
@@ -141,10 +160,15 @@ void TextureDisplay::unloadAllTexturesPressed()
 
 void TextureDisplay::changeDirectoryPressed()
 {
-    //TODO: I need a model for the currentDirectory I think. I want to display it by itself.
     std::filesystem::path currFolder = m_model->getCurrentTextureDirectory();
 
     QString directory = QFileDialog::getExistingDirectory(this, "New Texture Directory", QString::fromStdString(currFolder.string()));
 
     m_model->updateTexturePath(directory.toStdString());
+
+    if (currFolder.string() != directory.toStdString())
+    {
+        m_currentDirectory = directory;
+        m_displayLabel->setText(m_currentDirectory);
+    }
 }

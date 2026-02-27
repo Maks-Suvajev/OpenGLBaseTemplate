@@ -81,14 +81,17 @@ void TextureManager::refreshTextures()
         }
     }
 
-    // Anything left in oldKeys no longer has a source and therefore needs to be deleted 
     for (const auto& name : oldKeys)
     {
-        #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "ERROR::TextureManager::refreshTextures::Deleting key: " << name << std::endl;
-        #endif
+        // Keep old keys as long as the file still exists
+        if (!std::filesystem::exists(m_textures[name].get()->systemSourcePath))
+        {
+            #ifdef ENABLE_DEBUG_MESSAGES
+                std::cout << "ERROR::TextureManager::refreshTextures::Deleting key because it no longer exists: " << name << std::endl;
+            #endif
 
-        deleteTexture(name);
+            deleteTexture(name);
+        };
     }
 }
 

@@ -25,8 +25,6 @@ void TextureModel::unloadTexture(std::string name)
 
 void TextureModel::refreshTextures()
 {
-    std::cout << "Refresh textures pressed!!" << std::endl;
-
     beginResetModel();
 
     std::vector<std::string> currActiveTextures;
@@ -88,8 +86,32 @@ QString TextureModel::decodeTextureFormat(GLenum textureFormat) const
 
 QString TextureModel::formatToolTip(std::string key, gfx::Texture* texture) const
 {
+    std::cout << "texture->systemSourcePath.parent_path().string(): " << texture->systemSourcePath.parent_path().string() << std::endl << std::endl;
+    std::cout << "m_manager->getCurrentWorkingDirectory().string(): " << m_manager->getCurrentWorkingDirectory().string() << std::endl << std::endl;
+
+
+    if ( texture->systemSourcePath.parent_path() != m_manager->getCurrentWorkingDirectory())
+    {
+        return QString(
+            "<center><b>%1</b></center><br>"
+            "<b>Texture ID:</b> %2<br>"
+            "<b>Texture Format:</b> %3<br>"
+            "<b>Resolution:</b> %4x%5<br>"
+            "<b>Number of channels:</b> %6<br>"
+            "<b>Filepath:</b> %7<br>"
+            "<b style='color: #ffb2b2' > Not in current working directory.<br>"
+        ).arg(key)
+        .arg(texture->textureID)
+        .arg(decodeTextureFormat(texture->textureFormat))
+        .arg(texture->width)
+        .arg(texture->height)
+        .arg(texture->nrChannels)
+        .arg(texture->systemSourcePath.string());
+
+    };
+
     return QString(
-        "<b>Name:</b> %1<br>"
+        "<center><b>%1</b></center><br>"
         "<b>Texture ID:</b> %2<br>"
         "<b>Texture Format:</b> %3<br>"
         "<b>Resolution:</b> %4x%5<br>"
