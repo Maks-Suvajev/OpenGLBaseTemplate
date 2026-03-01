@@ -13,14 +13,14 @@ std::filesystem::path TextureModel::getCurrentTextureDirectory()
 }
 
 
-void TextureModel::loadTexture(std::string name)
+void TextureModel::loadTexture(std::string key)
 {
-    m_manager->loadTexture(name);
+    m_manager->loadTexture(key);
 }
 
-void TextureModel::unloadTexture(std::string name)
+void TextureModel::unloadTexture(std::string key)
 {
-    m_manager->unloadTexture(name);
+    m_manager->unloadTexture(key);
 }
 
 void TextureModel::refreshTextures()
@@ -86,10 +86,6 @@ QString TextureModel::decodeTextureFormat(GLenum textureFormat) const
 
 QString TextureModel::formatToolTip(std::string key, gfx::Texture* texture) const
 {
-    std::cout << "texture->systemSourcePath.parent_path().string(): " << texture->systemSourcePath.parent_path().string() << std::endl << std::endl;
-    std::cout << "m_manager->getCurrentWorkingDirectory().string(): " << m_manager->getCurrentWorkingDirectory().string() << std::endl << std::endl;
-
-
     if ( texture->systemSourcePath.parent_path() != m_manager->getCurrentWorkingDirectory())
     {
         return QString(
@@ -158,7 +154,7 @@ QVariant TextureModel::data(const QModelIndex &index, int role) const
             return formatToolTip(key, texture.get());
 
         case NameRole:    
-            return QString::fromStdString(key);                                             
+            return QString::fromStdString(texture->name);                                             
 
         case TextureIDRole:
             return texture->textureID;

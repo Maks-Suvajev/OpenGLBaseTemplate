@@ -25,21 +25,16 @@
 namespace gfx 
 {
 
-class TextureManager //: public QObject
+class TextureManager
 {
-    // Q_OBJECT
-
-    // signals:
-    //     void texturesUpdated();
-
     public:
         TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunctions* openGLFunctions );
-        void registerTexture(const std::filesystem::path& texturePath, std::string name);
+        void registerTexture(const std::filesystem::path& texturePath);
         void registerAllTextures();
-        void loadTexture(std::string name);
-        void unloadTexture(std::string name);
+        void loadTexture(std::string key);
+        void unloadTexture(std::string key);
         void resetTexture(Texture* texture);
-        void deleteTexture(std::string name);
+        void deleteTexture(std::string key);
         void loadAllTextures();
         void refreshTextures();
         void updateTexturePath(std::string path);
@@ -47,7 +42,7 @@ class TextureManager //: public QObject
 
         std::string extractTextureName(std::filesystem::path texturePath);
         std::filesystem::path getCurrentWorkingDirectory();
-        GLuint getTextureID(std::string name);
+        GLuint getTextureID(std::string key);
         void printAllTextures();
         const std::unordered_map<std::string, std::unique_ptr<Texture>>& getMap();
 

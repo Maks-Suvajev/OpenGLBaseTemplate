@@ -22,6 +22,7 @@ struct TextureConfig
 
 struct Texture
 {
+    std::string name;
     GLuint textureID     = INVALID_TEXTURE_ID;
     GLenum textureFormat = INVALID_TEXTURE_FORMAT;
     int width            = 0;

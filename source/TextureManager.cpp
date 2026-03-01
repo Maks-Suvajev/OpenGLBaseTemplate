@@ -16,7 +16,7 @@ void TextureManager::registerAllTextures()
 {
     for (const auto& texturePath : m_assetsManager->getTexturePaths())
     {
-        registerTexture(texturePath, extractTextureName(texturePath));
+        registerTexture(texturePath);
     }
 }
 
@@ -72,7 +72,7 @@ void TextureManager::refreshTextures()
 
         if (iter == oldKeys.end())
         {
-            registerTexture(texturePath, name);
+            registerTexture(texturePath);
 
         }
         else
@@ -130,20 +130,23 @@ void TextureManager::printAllTextures()
     std::cout << "----------------------------------------------------------------------------" << std::endl << std::endl;
 }
 
-void TextureManager::registerTexture(const std::filesystem::path& texturePath, std::string name)
+void TextureManager::registerTexture(const std::filesystem::path& texturePath)
 {
-    if (m_textures.contains(name))
+    const auto key = std::filesystem::canonical(texturePath).generic_string();
+
+    if (m_textures.contains(key))
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "ERROR::Texture already loaded with the key: " << name << std::endl;
+            std::cout << "ERROR::Texture already loaded with the key: " << texturePath.string() << std::endl;
         #endif
 
         return;
     }
 
     Texture textureData{};
-    textureData.systemSourcePath = texturePath;
-    m_textures[name] = std::make_unique<Texture>(textureData);     
+    textureData.systemSourcePath = std::filesystem::canonical(texturePath);
+    textureData.name             = extractTextureName(texturePath);
+    m_textures[key] = std::make_unique<Texture>(textureData);     
 }
 
 
@@ -160,23 +163,23 @@ void TextureManager::resetTexture(Texture* texture)
 }
 
 
-void TextureManager::unloadTexture(std::string name)
+void TextureManager::unloadTexture(std::string key)
 {
-    if (!m_textures.contains(name))
+    if (!m_textures.contains(key))
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "DEBUG::TextureManager::unloadTexture::Texture not found with the key: " << name << std::endl;
+            std::cout << "DEBUG::TextureManager::unloadTexture::Texture not found with the key: " << key << std::endl;
         #endif
 
         return;
     }
 
-    Texture* texture = m_textures[name].get();
+    Texture* texture = m_textures[key].get();
     
     if (!texture->isLoaded)
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "DEBUG::TextureManager::unloadTexture::Texture already unloaded: " << name << std::endl;
+            std::cout << "DEBUG::TextureManager::unloadTexture::Texture already unloaded: " << key << std::endl;
         #endif
 
         return;
@@ -187,23 +190,23 @@ void TextureManager::unloadTexture(std::string name)
 
 
 // Using name as hash, user can load the same texture under different names if they want
-void TextureManager::loadTexture(std::string name)
+void TextureManager::loadTexture(std::string key)
 {
-    if (!m_textures.contains(name))
+    if (!m_textures.contains(key))
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "DEBUG::TextureManager::loadTexture::Texture not found with the key: " << name << std::endl;
+            std::cout << "DEBUG::TextureManager::loadTexture::Texture not found with the key: " << key << std::endl;
         #endif
 
         return;
     }
 
-    Texture* texture = m_textures[name].get();
+    Texture* texture = m_textures[key].get();
 
     if (texture->isLoaded)
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "DEBUG::TextureManager::loadTexture::Textur already loaded: " << name << std::endl;
+            std::cout << "DEBUG::TextureManager::loadTexture::Textur already loaded: " << key << std::endl;
         #endif
 
         return; // Assume data is correct if it's loaded
@@ -299,25 +302,25 @@ void TextureManager::loadTexture(std::string name)
     stbi_image_free(data);
 }
 
-GLuint TextureManager::getTextureID(std::string name)
+GLuint TextureManager::getTextureID(std::string key)
 {
-    auto it = m_textures.find(name);
+    auto it = m_textures.find(key);
 
     // Check if key exists, also check if unique_ptr is valid that it points to
     if (it == m_textures.end() || !it->second) 
     {
         #ifdef ENABLE_DEBUG_MESSAGES
-            std::cout << "ERROR::Invalid key given: " << name << std::endl;
+            std::cout << "ERROR::Invalid key given: " << key << std::endl;
         #endif
 
         return INVALID_TEXTURE_ID;
     }
 
     #ifdef ENABLE_DEBUG_MESSAGES
-        std::cout << "DEBUG::Key: " << name << " Texture ID Found: " << m_textures[name]->textureID << std::endl;
+        std::cout << "DEBUG::Key: " << key << " Texture ID Found: " << m_textures[key]->textureID << std::endl;
     #endif
 
-    return m_textures[name]->textureID;
+    return m_textures[key]->textureID;
 }
 
 };

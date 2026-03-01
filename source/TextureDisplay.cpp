@@ -117,8 +117,8 @@ void TextureDisplay::loadTexturePressed()
 
     for (const auto& index : selectedIndices)
     {
-        QString name = index.data(Qt::DisplayRole).toString();
-        m_model->loadTexture(name.toStdString());
+        QString key = index.data(TextureModel::FilePathRole).toString();
+        m_model->loadTexture(key.toStdString());
         emit m_model->dataChanged(index, index);
     }
 
@@ -129,8 +129,8 @@ void TextureDisplay::loadAllTexturesPressed()
     for (int i = 0; i < m_managerView->model()->rowCount(); ++i) // Not sure if there's better way to iterate..
     {
         QModelIndex index = m_managerView->model()->index(i, 0);
-        QString name = index.data(Qt::DisplayRole).toString();
-        m_model->loadTexture(name.toStdString());
+        QString key = index.data(TextureModel::FilePathRole).toString();
+        m_model->loadTexture(key.toStdString());
         emit m_model->dataChanged(index, index);
     }
 }
@@ -141,8 +141,8 @@ void TextureDisplay::unloadTexturePressed()
 
     for (const auto& index : selectedIndices)
     {
-        QString name = index.data(Qt::DisplayRole).toString();
-        m_model->unloadTexture(name.toStdString());
+        QString key = index.data(TextureModel::FilePathRole).toString();
+        m_model->unloadTexture(key.toStdString());
         emit m_model->dataChanged(index, index);
     }
 }
@@ -152,8 +152,8 @@ void TextureDisplay::unloadAllTexturesPressed()
     for (int i = 0; i < m_managerView->model()->rowCount(); ++i) // Not sure if there's better way to iterate..
     {
         QModelIndex index = m_managerView->model()->index(i, 0);
-        QString name = index.data(Qt::DisplayRole).toString();
-        m_model->unloadTexture(name.toStdString());
+        QString key = index.data(TextureModel::FilePathRole).toString();
+        m_model->unloadTexture(key.toStdString());
         emit m_model->dataChanged(index, index);
     }
 }
@@ -163,6 +163,11 @@ void TextureDisplay::changeDirectoryPressed()
     std::filesystem::path currFolder = m_model->getCurrentTextureDirectory();
 
     QString directory = QFileDialog::getExistingDirectory(this, "New Texture Directory", QString::fromStdString(currFolder.string()));
+
+    if (directory.isEmpty())
+    {
+        return;
+    }
 
     m_model->updateTexturePath(directory.toStdString());
 

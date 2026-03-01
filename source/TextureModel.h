@@ -24,8 +24,8 @@ class TextureModel : public QAbstractListModel
         std::filesystem::path getCurrentTextureDirectory();
         // Button functions
         void refreshTextures();
-        void loadTexture(std::string name);
-        void unloadTexture(std::string name);
+        void loadTexture(std::string key);
+        void unloadTexture(std::string key);
         void updateTexturePath(std::string path);
 
         
