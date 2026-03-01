@@ -45,7 +45,7 @@ void TextureDisplay::addCurrDirectoryDisplay()
 
     m_currentDirectory = QString::fromStdString(m_model->getCurrentTextureDirectory().string());
 
-    QLabel* titleLabel = new QLabel("Current directory: ");
+    QLabel* titleLabel = new QLabel("Active directory: ");
     m_displayLabel = new QLabel(m_currentDirectory); 
 
     layout->addWidget(titleLabel);

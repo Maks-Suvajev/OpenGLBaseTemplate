@@ -95,7 +95,7 @@ QString TextureModel::formatToolTip(std::string key, gfx::Texture* texture) cons
             "<b>Resolution:</b> %4x%5<br>"
             "<b>Number of channels:</b> %6<br>"
             "<b>Filepath:</b> %7<br>"
-            "<b style='color: #ffb2b2' > Not in current working directory.<br>"
+            "<b style='color: #ffb2b2' > Not in current active directory.<br>"
         ).arg(key)
         .arg(texture->textureID)
         .arg(decodeTextureFormat(texture->textureFormat))
