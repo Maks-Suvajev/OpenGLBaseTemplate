@@ -16,6 +16,9 @@
 #include "TextureManager.h"
 #include "UIColours.h"
 
+static constexpr std::string_view constTitle =  "Texture Loader";
+static constexpr int constTitleFontSize =  15;
+static constexpr int constSpacing =  15;
 
 
 class TextureDisplay : public QWidget
@@ -27,6 +30,7 @@ class TextureDisplay : public QWidget
 
     private:
 
+        // Button control functions
         void refreshPressed();
         void loadTexturePressed();
         void loadAllTexturesPressed();
@@ -35,18 +39,21 @@ class TextureDisplay : public QWidget
         void changeDirectoryPressed();
         void openExplorerPressed();
 
-        void createButtonPanel();
+
+        void createTitle(QLayout* parentLayout);
+        void createListViewWithControls(gfx::TextureManager* textureManager, QVBoxLayout* parentLayout);
+        void addCurrDirectoryDisplay(QVBoxLayout* parentLayout);
+        void addChangeDirectoryButton(QVBoxLayout* parentLayout);
+        void createButtonPanel(QHBoxLayout* parentLayout);
+
         template<typename FuncType>
-        void addButtonToPanel(QString label, FuncType function);
-        void addCurrDirectoryDisplay();
-        void addChangeDirectoryButton();
+        void addButtonToPanel(QLayout* layout, QString label, FuncType function);
+
         void setButtonColours(QWidget* widget);
 
-        QLabel* m_displayLabel;
-        QString m_currentDirectory;
+        std::unique_ptr<QLabel>         m_directoryDisplayLabel;
+        QString                         m_currentDirectory;
         std::unique_ptr<QVBoxLayout>    m_mainLayout; // Main connector layout
-        std::unique_ptr<QVBoxLayout>    m_buttonPanel; // Main functionality panel
-        std::unique_ptr<QVBoxLayout>    m_managerViewWithButton; // With change dir button attached
         std::unique_ptr<QListView>      m_managerView;
         std::unique_ptr<QLabel>         m_detailsLabel; // Hovering data on list member
         std::unique_ptr<TextureModel>   m_model;

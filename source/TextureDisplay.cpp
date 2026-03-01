@@ -1,22 +1,37 @@
 #include "TextureDisplay.h"
 
 
+
+
+
 TextureDisplay::TextureDisplay(gfx::TextureManager* textureManager, QWidget* parent)
     : QWidget(parent)
 {
     m_mainLayout = std::make_unique<QVBoxLayout>(this);
+    
+    m_mainLayout->setAlignment(Qt::AlignLeft);
 
-    QLabel* title = new QLabel("Texture Loader");
+    createTitle(m_mainLayout.get());
+
+    createListViewWithControls(textureManager, m_mainLayout.get());
+}
+
+void TextureDisplay::createTitle(QLayout* parentLayout)
+{
+    QLabel* title = new QLabel(constTitle.data());
+
     title->setAlignment(Qt::AlignCenter);
 
     QFont font = title->font();
-    font.setPointSize(15);
+    font.setPointSize(constTitleFontSize);
     title->setFont(font);
     
-    m_mainLayout->addWidget(title);
-    m_mainLayout->setAlignment(Qt::AlignLeft);
+    parentLayout->addWidget(title);
+}
 
-    m_managerViewWithButton = std::make_unique<QVBoxLayout>();
+void TextureDisplay::createListViewWithControls(gfx::TextureManager* textureManager, QVBoxLayout* parentLayout)
+{
+    QVBoxLayout* layout = new QVBoxLayout();
 
     m_managerView = std::make_unique<QListView>(this);
     m_model = std::make_unique<TextureModel>(textureManager, this);
@@ -25,37 +40,47 @@ TextureDisplay::TextureDisplay(gfx::TextureManager* textureManager, QWidget* par
     m_managerView->setMouseTracking(true);
     m_managerView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    m_managerViewWithButton->addWidget(m_managerView.get(), 1);
-    addCurrDirectoryDisplay();
-    addChangeDirectoryButton();
+    layout->addWidget(m_managerView.get(), 1);
 
-    QHBoxLayout* main_panel = new QHBoxLayout();
+    addCurrDirectoryDisplay(layout);
+    addChangeDirectoryButton(layout);
 
-    createButtonPanel();
+    QHBoxLayout* viewWithButtonPanel = new QHBoxLayout();
+    viewWithButtonPanel->addLayout(layout);
 
-    main_panel->addLayout(m_managerViewWithButton.get());
-    main_panel->addLayout(m_buttonPanel.get());
+    createButtonPanel(viewWithButtonPanel);
 
-    m_mainLayout->addLayout(main_panel);
+    parentLayout->addLayout(viewWithButtonPanel);
 }
 
-void TextureDisplay::addCurrDirectoryDisplay()
+void TextureDisplay::addCurrDirectoryDisplay(QVBoxLayout* parentLayout)
 {
     QHBoxLayout* layout = new QHBoxLayout();
 
     m_currentDirectory = QString::fromStdString(m_model->getCurrentTextureDirectory().string());
 
     QLabel* titleLabel = new QLabel("Active directory: ");
-    m_displayLabel = new QLabel(m_currentDirectory); 
+    m_directoryDisplayLabel = std::make_unique<QLabel>(m_currentDirectory); 
 
     layout->addWidget(titleLabel);
-    layout->addWidget(m_displayLabel);
+    layout->addWidget(m_directoryDisplayLabel.get());
 
-    layout->setSpacing(5);
+    layout->setSpacing(constSpacing);
     layout->addStretch(1);
 
-    m_managerViewWithButton->addLayout(layout);
+    parentLayout->addLayout(layout);
 }
+
+void TextureDisplay::addChangeDirectoryButton(QVBoxLayout* parentLayout)
+{
+    QHBoxLayout* buttonLayout = new QHBoxLayout(); 
+
+    addButtonToPanel(buttonLayout, "Change active directory", &TextureDisplay::changeDirectoryPressed);
+    addButtonToPanel(buttonLayout, "Open file explorer", &TextureDisplay::openExplorerPressed);
+
+    parentLayout->addLayout(buttonLayout);
+}
+
 
 void TextureDisplay::setButtonColours(QWidget* widget)
 {
@@ -69,49 +94,32 @@ void TextureDisplay::setButtonColours(QWidget* widget)
     widget->setAutoFillBackground(true);
 }
 
-void TextureDisplay::addChangeDirectoryButton()
-{
-    QPushButton* changeDirButton = new QPushButton("Change active directory");
-    setButtonColours(changeDirButton);
-    changeDirButton->setText("Change active directory");
-    connect(changeDirButton, &QPushButton::clicked, this, &TextureDisplay::changeDirectoryPressed);
 
-    QPushButton* openExplorerButton = new QPushButton("Open file explorer");
-    setButtonColours(openExplorerButton);
-    openExplorerButton->setText("Open Explorer");
-    connect(openExplorerButton, &QPushButton::clicked, this, &TextureDisplay::openExplorerPressed);
-
-    QHBoxLayout* buttonLayout = new QHBoxLayout(); 
-
-    buttonLayout->addWidget(changeDirButton);
-    buttonLayout->addWidget(openExplorerButton);
-
-    m_managerViewWithButton->addLayout(buttonLayout);
-}
 
 template<typename FuncType>
-void TextureDisplay::addButtonToPanel(QString label, FuncType function)
+void TextureDisplay::addButtonToPanel(QLayout* layout, QString label, FuncType function)
 {
     QPushButton* button = new QPushButton(label);
     setButtonColours(button);
     button->setText(label);
     connect(button, &QPushButton::clicked, this, function);
-    m_buttonPanel->addWidget(button);
+    layout->addWidget(button);
 }
 
-void TextureDisplay::createButtonPanel()
+void TextureDisplay::createButtonPanel(QHBoxLayout* parentLayout)
 {
-    m_buttonPanel = std::make_unique<QVBoxLayout>();
-    m_buttonPanel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    m_buttonPanel->setSpacing(0);
-    m_buttonPanel->setContentsMargins(0,0,0,0);
+    QVBoxLayout* buttonPanel = new QVBoxLayout();
+    buttonPanel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    buttonPanel->setSpacing(0);
+    buttonPanel->setContentsMargins(0,0,0,0);
 
-    addButtonToPanel("Refresh", &TextureDisplay::refreshPressed);
-    addButtonToPanel("Load", &TextureDisplay::loadTexturePressed);
-    addButtonToPanel("Load All", &TextureDisplay::loadAllTexturesPressed);
-    addButtonToPanel("Unload", &TextureDisplay::unloadTexturePressed);
-    addButtonToPanel("Unload All", &TextureDisplay::unloadAllTexturesPressed);
+    addButtonToPanel(buttonPanel, "Refresh", &TextureDisplay::refreshPressed);
+    addButtonToPanel(buttonPanel, "Load", &TextureDisplay::loadTexturePressed);
+    addButtonToPanel(buttonPanel, "Load All", &TextureDisplay::loadAllTexturesPressed);
+    addButtonToPanel(buttonPanel, "Unload", &TextureDisplay::unloadTexturePressed);
+    addButtonToPanel(buttonPanel, "Unload All", &TextureDisplay::unloadAllTexturesPressed);
 
+    parentLayout->addLayout(buttonPanel);
 }
 
 void TextureDisplay::refreshPressed()
@@ -182,7 +190,7 @@ void TextureDisplay::changeDirectoryPressed()
     if (currFolder.string() != directory.toStdString())
     {
         m_currentDirectory = directory;
-        m_displayLabel->setText(m_currentDirectory);
+        m_directoryDisplayLabel.get()->setText(m_currentDirectory);
     }
 }
 
