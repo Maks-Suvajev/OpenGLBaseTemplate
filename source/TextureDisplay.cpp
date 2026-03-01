@@ -16,9 +16,6 @@ TextureDisplay::TextureDisplay(gfx::TextureManager* textureManager, QWidget* par
     m_mainLayout->addWidget(title);
     m_mainLayout->setAlignment(Qt::AlignLeft);
 
-    // this->setFixedHeight(200);
-     //this->setFixedWidth(400);
-
     m_managerViewWithButton = std::make_unique<QVBoxLayout>();
 
     m_managerView = std::make_unique<QListView>(this);
@@ -74,11 +71,22 @@ void TextureDisplay::setButtonColours(QWidget* widget)
 
 void TextureDisplay::addChangeDirectoryButton()
 {
-    QPushButton* button = new QPushButton("Change active directory...");
-    setButtonColours(button);
-    button->setText("Change active directory...");
-    connect(button, &QPushButton::clicked, this, &TextureDisplay::changeDirectoryPressed);
-    m_managerViewWithButton->addWidget(button);
+    QPushButton* changeDirButton = new QPushButton("Change active directory");
+    setButtonColours(changeDirButton);
+    changeDirButton->setText("Change active directory");
+    connect(changeDirButton, &QPushButton::clicked, this, &TextureDisplay::changeDirectoryPressed);
+
+    QPushButton* openExplorerButton = new QPushButton("Open file explorer");
+    setButtonColours(openExplorerButton);
+    openExplorerButton->setText("Open Explorer");
+    connect(openExplorerButton, &QPushButton::clicked, this, &TextureDisplay::openExplorerPressed);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout(); 
+
+    buttonLayout->addWidget(changeDirButton);
+    buttonLayout->addWidget(openExplorerButton);
+
+    m_managerViewWithButton->addLayout(buttonLayout);
 }
 
 template<typename FuncType>
@@ -98,11 +106,11 @@ void TextureDisplay::createButtonPanel()
     m_buttonPanel->setSpacing(0);
     m_buttonPanel->setContentsMargins(0,0,0,0);
 
-    addButtonToPanel("REFRESH", &TextureDisplay::refreshPressed);
-    addButtonToPanel("LOAD", &TextureDisplay::loadTexturePressed);
-    addButtonToPanel("LOAD ALL", &TextureDisplay::loadAllTexturesPressed);
-    addButtonToPanel("UNLOAD", &TextureDisplay::unloadTexturePressed);
-    addButtonToPanel("UNLOAD ALL", &TextureDisplay::unloadAllTexturesPressed);
+    addButtonToPanel("Refresh", &TextureDisplay::refreshPressed);
+    addButtonToPanel("Load", &TextureDisplay::loadTexturePressed);
+    addButtonToPanel("Load All", &TextureDisplay::loadAllTexturesPressed);
+    addButtonToPanel("Unload", &TextureDisplay::unloadTexturePressed);
+    addButtonToPanel("Unload All", &TextureDisplay::unloadAllTexturesPressed);
 
 }
 
@@ -176,4 +184,9 @@ void TextureDisplay::changeDirectoryPressed()
         m_currentDirectory = directory;
         m_displayLabel->setText(m_currentDirectory);
     }
+}
+
+void TextureDisplay::openExplorerPressed()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentDirectory));
 }

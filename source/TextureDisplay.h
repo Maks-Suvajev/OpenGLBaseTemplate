@@ -10,6 +10,7 @@
 #include <QList>
 #include <QListWidgetItem>
 #include <QFileDialog>
+#include <QDesktopServices>
 
 #include "TextureModel.h"
 #include "TextureManager.h"
@@ -32,6 +33,7 @@ class TextureDisplay : public QWidget
         void unloadTexturePressed();
         void unloadAllTexturesPressed();
         void changeDirectoryPressed();
+        void openExplorerPressed();
 
         void createButtonPanel();
         template<typename FuncType>
