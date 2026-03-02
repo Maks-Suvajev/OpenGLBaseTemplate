@@ -20,7 +20,7 @@
 #include "TextureTypes.h"
 
 // Asset manager
-#include "GfxAssetsManager.h"
+#include "GfxAssetRegistry.h"
 
 namespace gfx 
 {
@@ -28,7 +28,7 @@ namespace gfx
 class TextureManager
 {
     public:
-        TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunctions* openGLFunctions );
+        TextureManager(GfxAssetRegistry* assetsManager, QOpenGLExtraFunctions* openGLFunctions );
         void registerTexture(const std::filesystem::path& texturePath);
         void registerAllTextures();
         void loadTexture(std::string key);
@@ -48,8 +48,9 @@ class TextureManager
 
     private:
         std::unordered_map<std::string, std::unique_ptr<Texture>> m_textures;
-        QOpenGLExtraFunctions* m_openGLFunctions;
-        GfxAssetsManager* m_assetsManager;
+        GfxAssetRegistry*                                         m_assetsManager;
+        QOpenGLExtraFunctions*                                    m_openGLFunctions;
+
 
 };
 

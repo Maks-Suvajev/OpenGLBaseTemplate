@@ -5,7 +5,7 @@
 
 namespace gfx {
 
-TextureManager::TextureManager(GfxAssetsManager* assetsManager, QOpenGLExtraFunctions* openGLFunctions)
+TextureManager::TextureManager(GfxAssetRegistry* assetsManager, QOpenGLExtraFunctions* openGLFunctions)
     : m_openGLFunctions(openGLFunctions),
       m_assetsManager(assetsManager)
 {

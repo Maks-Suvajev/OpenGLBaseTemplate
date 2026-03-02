@@ -43,10 +43,10 @@ set(SRC_FILES
     ${CORE_SRC_DIR}/EngineCore.cpp
     ${CORE_SRC_DIR}/Test.cpp
 
-    ${ASSETS_SRC_DIR}/GfxAssetsManager.cpp
+    ${ASSETS_SRC_DIR}/GfxAssetRegistry.cpp
 
-    ${SHADER_SRC_DIR}/shader.cpp
-	${SHADER_SRC_DIR}/shaderManager.cpp
+    ${SHADER_SRC_DIR}/Shader.cpp
+	${SHADER_SRC_DIR}/ShaderManager.cpp
 
     ${ENTITY_SRC_DIR}/EntityManager.cpp
     ${CAMERA_SRC_DIR}/Camera.cpp

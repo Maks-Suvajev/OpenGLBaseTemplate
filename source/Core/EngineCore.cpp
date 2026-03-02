@@ -37,13 +37,13 @@ void EngineCore::init(QOpenGLExtraFunctions* openGLFunctions)
     m_openGLFunctions = openGLFunctions;
 
     // Detect and load asset paths
-    m_gfxAssetsManagerModule = std::make_unique<gfx::GfxAssetsManager>();
+    m_gfxAssetRegistryModule = std::make_unique<gfx::GfxAssetRegistry>();
 
     // Load up all the detected textures
-    m_textureManagerModule = std::make_unique<gfx::TextureManager>(m_gfxAssetsManagerModule.get(), m_openGLFunctions);
+    m_textureManagerModule = std::make_unique<gfx::TextureManager>(m_gfxAssetRegistryModule.get(), m_openGLFunctions);
 
     // Get the shader paths (from test data)
-    std::vector<ShaderProgramFilePaths> shaderSources = m_gfxAssetsManagerModule->loadShaderPathSet(shaderFilenames);
+    std::vector<ShaderProgramFilePaths> shaderSources = m_gfxAssetRegistryModule->loadShaderPathSet(shaderFilenames);
 
     // Load and compile shaders
     m_shaderManagerModule = std::make_unique<gfx::ShaderManager>(shaderSources, m_openGLFunctions);
