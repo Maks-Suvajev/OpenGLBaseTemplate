@@ -67,9 +67,6 @@ void EngineCore::init(QOpenGLExtraFunctions* openGLFunctions)
     m_renderModule = std::make_unique<gfx::Renderer>(openGLFunctions);
     m_renderSystemModule = std::make_unique<gfx::RenderSystem>();
 
-
-    m_movementModule = std::make_unique<gfx::Movement>();
-
     emit engineInitialised(this);
 }
 

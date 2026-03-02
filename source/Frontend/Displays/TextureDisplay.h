@@ -39,7 +39,6 @@ class TextureDisplay : public QWidget
         void changeDirectoryPressed();
         void openExplorerPressed();
 
-
         void createTitle(QLayout* parentLayout);
         void createListViewWithControls(gfx::TextureManager* textureManager, QVBoxLayout* parentLayout);
         void addCurrDirectoryDisplay(QVBoxLayout* parentLayout);

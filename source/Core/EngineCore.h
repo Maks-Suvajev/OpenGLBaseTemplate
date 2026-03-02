@@ -29,7 +29,6 @@
 // Systems
 #include "RenderSystem.h" 
 #include "Renderer.h"
-#include "Movement.h"
 
 #include "ShaderTypes.h"
 
@@ -72,7 +71,6 @@ class EngineCore : public QObject
         // Systems
         std::unique_ptr<gfx::Renderer>          m_renderModule; // Renders renderable components
         std::unique_ptr<gfx::RenderSystem>      m_renderSystemModule; // Syncs rendering, material, mesh and light 
-        std::unique_ptr<gfx::Movement>          m_movementModule; // Controls movement of entities based on inputs and physics
         std::unique_ptr<gfx::LightingSystem>    m_lightingSystemModule;
 
         // Components and Entities

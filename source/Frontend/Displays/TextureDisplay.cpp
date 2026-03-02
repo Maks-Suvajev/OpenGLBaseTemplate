@@ -1,9 +1,5 @@
 #include "TextureDisplay.h"
 
-
-
-
-
 TextureDisplay::TextureDisplay(gfx::TextureManager* textureManager, QWidget* parent)
     : QWidget(parent)
 {
