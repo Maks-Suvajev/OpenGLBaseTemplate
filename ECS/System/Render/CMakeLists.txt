@@ -3,7 +3,9 @@ add_library(RenderLib
     source/Renderer.cpp
 )
 
-target_include_directories(RenderLib PUBLIC source)
+target_include_directories(RenderLib 
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/source
+)
 
 target_link_libraries(RenderLib 
     PUBLIC TypeLib

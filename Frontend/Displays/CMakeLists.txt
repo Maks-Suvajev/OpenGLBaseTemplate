@@ -16,6 +16,7 @@ target_include_directories(DisplaysLib
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 target_link_libraries(DisplaysLib
-    PUBLIC ModelsLib
-    Qt6::Widgets
+    PUBLIC 
+        ModelsLib
+        Qt6::Widgets
 )

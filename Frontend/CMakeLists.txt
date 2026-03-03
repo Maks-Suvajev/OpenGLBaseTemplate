@@ -1,4 +1,3 @@
-# QT
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -22,7 +21,6 @@ target_link_libraries(FrontendLib
         DisplaysLib
         Qt6::OpenGLWidgets
         Qt6::Widgets
-    PRIVATE 
         ModelsLib
 )
 
