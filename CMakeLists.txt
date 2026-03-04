@@ -10,7 +10,7 @@ set(CODE_SRC_DIR ${CMAKE_SOURCE_DIR}/source)
 # --------------------------------------- Debug message toggle ---------------------------------------
 add_compile_definitions(ENABLE_DEBUG_MESSAGES)
 add_compile_definitions(TEXTURES_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Assets/resources/textures\")
-add_compile_definitions(SHADER_SOURCE_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Assets/resources/glsl\")
+add_compile_definitions(SHADER_SOURCE_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Assets/resources/glsl/source\")
 
 ## SUBMODULES
 # Assets
