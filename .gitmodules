@@ -1,7 +1,3 @@
-[submodule "Shaders"]
-	path = source/Shaders
-	url = git@github.com:Maks-Suvajev/Shaders.git
-	branch = master_integration
 [submodule "Dependencies"]
 	path = Dependencies
 	url = git@github.com:Maks-Suvajev/Dependencies.git
