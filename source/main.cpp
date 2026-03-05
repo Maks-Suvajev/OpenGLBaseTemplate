@@ -1,7 +1,5 @@
 #include "EngineCore.h"
 
-#include <glm/glm.hpp>
-
 #include <QApplication>
 #include "MainWindow.h"
 #include "EngineCore.h"
