@@ -17,7 +17,7 @@ fi
 echo "cd build"
 cd build
 echo "Running cmake"
-cmake ..
+cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build .
 
 exit 0

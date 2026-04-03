@@ -1,8 +1,6 @@
-#include "EngineCore.h"
-
 #include <QApplication>
-#include "MainWindow.h"
 #include "EngineCore.h"
+#include "MainWindow.h"
 
 int main(int argc, char* argv[])
 {
