@@ -4,6 +4,7 @@ project(RenderingEngine LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(DEPS_ASSIMP_DIR ${CMAKE_SOURCE_DIR}/Dependencies/assimp)
 set(DEPS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/Dependencies/includes)
 set(CODE_SRC_DIR ${CMAKE_SOURCE_DIR}/source)
 
@@ -13,6 +14,13 @@ add_compile_definitions(TEXTURES_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Asse
 add_compile_definitions(SHADER_SOURCE_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Assets/resources/glsl/source\")
 
 ## SUBMODULES
+set(BUILD_SHARED_LIBS OFF)
+
+# Assets
+add_subdirectory(${DEPS_ASSIMP_DIR}
+                 ${CMAKE_BINARY_DIR}/Dependencies/assimp
+)
+
 # Assets
 add_subdirectory(Assets)
 
@@ -56,6 +64,7 @@ target_link_libraries(${PROJECT_NAME}
     FrontendLib
     ResourceManagersLib
     ShaderLib
+    SceneModelLib
 )
 
 # Set output directory
