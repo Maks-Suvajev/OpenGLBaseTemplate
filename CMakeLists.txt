@@ -3,26 +3,32 @@ project(RenderingEngine LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(DEPS_ASSIMP_DIR ${CMAKE_SOURCE_DIR}/Dependencies/assimp)
 set(DEPS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/Dependencies/includes)
-set(CODE_SRC_DIR ${CMAKE_SOURCE_DIR}/source)
+
+add_compile_options(-fdiagnostics-color=always)
 
 # --------------------------------------- Debug message toggle ---------------------------------------
 add_compile_definitions(ENABLE_DEBUG_MESSAGES)
+
 add_compile_definitions(TEXTURES_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Assets/resources/textures\")
 add_compile_definitions(SHADER_SOURCE_DEFAULT_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/Assets/resources/glsl/source\")
 
 ## SUBMODULES
 set(BUILD_SHARED_LIBS OFF)
 
-# Assets
+# Include ASSIMP
 add_subdirectory(${DEPS_ASSIMP_DIR}
                  ${CMAKE_BINARY_DIR}/Dependencies/assimp
 )
 
 # Assets
 add_subdirectory(Assets)
+
+# Resource 
+add_subdirectory(ResourceManagers)
 
 # Core
 add_subdirectory(Core)
@@ -33,9 +39,6 @@ add_subdirectory(ECS)
 # Frontend
 add_subdirectory(Frontend)
 
-# Resource 
-add_subdirectory(ResourceManagers)
-
 # Top level source
 set(SRC_FILES
     ${CMAKE_SOURCE_DIR}/source/main.cpp
@@ -45,16 +48,6 @@ set(SRC_FILES
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECT_NAME="\"${PROJECT_NAME}\"")
-
-if(MSVC)
-    add_compile_options(/permissive-)
-endif()
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-)
 
 # Link all required libs
 target_link_libraries(${PROJECT_NAME}
@@ -72,3 +65,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/ResourceManagers/Texture/defaults
+        ${CMAKE_SOURCE_DIR}/bin/defaults
+)
