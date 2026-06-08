@@ -16,13 +16,6 @@ cmake -S "$SCRIPT_DIR" -B "$BUILD_DIR" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
                                        -DCMAKE_BUILD_TYPE=Debug \
                                         -DCMAKE_VERBOSE_MAKEFILE=ON -G "MinGW Makefiles" \
                                         -DCMAKE_PREFIX_PATH="C:/Qt/6.10.2/mingw_64"\
-                                         -DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF \
-                                         -DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF
-
-
-                                        # -DQt6_DIR="C:/Qt/6.10.2/mingw_64/lib/cmake/Qt6" \
-                                        #-DCMAKE_C_COMPILER=gcc \
-                                        #-DCMAKE_CXX_COMPILER=g++ \
 
 cmake --build "$BUILD_DIR" -- -j$(nproc)
 
