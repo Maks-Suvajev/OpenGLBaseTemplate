@@ -5,10 +5,17 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if(MSVC)
+    add_compile_options(/permissive- /W4 /WX)
+endif()
+
 set(DEPS_ASSIMP_DIR ${CMAKE_SOURCE_DIR}/Dependencies/assimp)
 set(DEPS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/Dependencies/includes)
 
-add_compile_options(-fdiagnostics-color=always)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 
 # --------------------------------------- Debug message toggle ---------------------------------------
 add_compile_definitions(ENABLE_DEBUG_MESSAGES)
@@ -44,6 +51,11 @@ set(SRC_FILES
     ${CMAKE_SOURCE_DIR}/source/main.cpp
 )
 
+file(GLOB_RECURSE ALL_HEADERS
+    "${CMAKE_SOURCE_DIR}/*.h"
+)
+add_custom_target(headers SOURCES ${ALL_HEADERS})
+
 # Add executable
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
@@ -69,4 +81,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/ResourceManagers/Texture/defaults
         ${CMAKE_SOURCE_DIR}/bin/defaults
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/ResourceManagers/Texture/defaults
+        ${CMAKE_SOURCE_DIR}/build/defaults
 )

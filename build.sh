@@ -14,9 +14,11 @@ mkdir -p "$BUILD_DIR"
 
 cmake -S "$SCRIPT_DIR" -B "$BUILD_DIR" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
                                        -DCMAKE_BUILD_TYPE=Debug \
-                                        -DCMAKE_VERBOSE_MAKEFILE=ON -G "MinGW Makefiles" \
-                                        -DCMAKE_PREFIX_PATH="C:/Qt/6.10.2/mingw_64"\
+                                       -DCMAKE_VERBOSE_MAKEFILE=ON \
+                                       -G "Visual Studio 17 2022" \
+                                       -A x64 \
+                                       -DCMAKE_PREFIX_PATH="C:/Qt/6.11.1/msvc2022_64"
 
-cmake --build "$BUILD_DIR" -- -j$(nproc)
+cmake --build "$BUILD_DIR" --config Debug 
 
 exit 0
