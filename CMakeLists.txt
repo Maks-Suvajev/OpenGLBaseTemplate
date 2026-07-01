@@ -16,6 +16,7 @@ set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "" FORCE)
 
 # --------------------------------------- Debug message toggle ---------------------------------------
 add_compile_definitions(ENABLE_DEBUG_MESSAGES)
@@ -71,6 +72,8 @@ target_link_libraries(${PROJECT_NAME}
     ShaderLib
     SceneModelLib
 )
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 
 # Set output directory
 set_target_properties(${PROJECT_NAME} PROPERTIES
